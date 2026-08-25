@@ -1,0 +1,335 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>單元三：二元搜尋樹</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans TC",sans-serif;background:#f4f7fa;color:#172033;line-height:1.7}
+.container{max-width:1150px;margin:auto;padding:20px}.hero{background:linear-gradient(135deg,#1d456b,#39729d);color:white;border-radius:20px;padding:28px;margin-bottom:18px}.hero h1{margin:8px 0;font-size:32px}
+.tag{display:inline-block;background:white;color:#1d456b;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold}
+.start-screen{position:fixed;inset:0;background:rgba(20,48,75,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.start-card{width:min(600px,100%);background:#fff;border-radius:20px;padding:28px;box-shadow:0 18px 50px #0004}.start-card h1{color:#1d456b}
+.start-form,.student-info{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;background:#eef4f8;padding:15px;border-radius:12px;margin:15px 0}.start-form label{font-weight:bold}.start-form input{display:block;width:100%;margin-top:5px;padding:11px;border:1px solid #cbd5df;border-radius:8px;font:inherit}
+.nav{display:none;gap:8px;overflow:auto;margin-bottom:18px}.nav.ready{display:flex}.nav button{border:0;padding:11px 16px;border-radius:22px;background:#e2e9ef;font-weight:bold;cursor:pointer;white-space:nowrap}.nav button.active{background:#1d456b;color:#fff}
+.section{display:none;background:#fff;border:1px solid #dce4eb;border-radius:17px;padding:22px;margin-bottom:16px;scroll-margin-top:20px}.section.show{display:block}
+.page-title{color:#1d456b;font-size:28px;margin:0 0 18px;padding-bottom:10px;border-bottom:3px solid #dbe6ef}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{border:1px solid #dce4eb;border-radius:13px;padding:15px}
+button.primary{border:0;background:#1d456b;color:white;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}button.secondary{border:0;background:#e4eaf0;color:#26384b;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #dce4eb;border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;font-size:15px}.choice.selected{background:#e6f1f9;border-color:#1d5f8d}
+textarea,input[type=text]{width:100%;padding:10px;border:1px solid #cbd5df;border-radius:8px;font:inherit}.feedback{font-weight:bold;min-height:26px}
+.quiz-bst-mini{position:relative;width:330px;height:170px;margin:10px auto;background:#f8fafc;border:1px solid #dce4eb;border-radius:12px}
+.quiz-mini-node{position:absolute;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#c54f4f;color:#fff;font-weight:700;border:2px solid #a43b3b}
+.quiz-mini-node.top{left:146px;top:16px}.quiz-mini-node.left{left:82px;top:78px}.quiz-mini-node.right{left:210px;top:78px}
+.quiz-mini-node.ll{left:45px;top:130px}.quiz-mini-node.lr{left:119px;top:130px}.quiz-mini-node.rl{left:183px;top:130px}.quiz-mini-node.rr{left:257px;top:130px}
+.note{background:#eef4f8;padding:13px;border-radius:10px;font-size:14px}
+.tree-wrap{background:#f8fafc;border:1px solid #dce4eb;border-radius:15px;padding:16px;margin:14px 0;overflow:auto}
+.tree{position:relative;min-width:620px;min-height:330px}.node{position:absolute;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#c54f4f;color:#fff;font-weight:bold;border:3px solid #a43b3b;transition:.35s;z-index:2}.node.active{background:#1f6fb2;border-color:#0d4f86;transform:scale(1.14);box-shadow:0 8px 18px #1f6fb255}.node.done{background:#4d8b69;border-color:#3f7155}.edge{position:absolute;height:3px;background:#9aabb8;transform-origin:left center;z-index:1}
+.traversal-controls{display:flex;gap:8px;flex-wrap:wrap}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.status-card{border:1px solid #dce4eb;border-radius:10px;padding:10px;text-align:center;background:#fff}.status-value{font-size:22px;font-weight:bold;color:#1d456b}
+.order-box{font-size:20px;font-weight:800;background:#eef4f8;border-radius:12px;padding:14px}.answer-table{width:100%;border-collapse:collapse}.answer-table th,.answer-table td{border:1px solid #d8e1e8;padding:9px;text-align:center}.answer-table th{background:#edf3f7}
+.check{display:block;padding:10px;border-bottom:1px solid #e5e9ed}.check input{width:20px;height:20px;margin-right:8px}.meter{height:12px;background:#e2e7ec;border-radius:10px;overflow:hidden;margin-top:15px}.meter div{height:100%;width:0;background:#1d456b;transition:width .3s}
+.score{font-size:42px;font-weight:bold}.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.check-understand{display:block;margin-top:8px;font-weight:bold}.check-understand input{width:19px;height:19px;margin-right:6px}
+.search-animation{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:18px;background:#f8fafc;border:1px solid #dce4eb;border-radius:14px}.search-node{min-width:130px;padding:12px;border-radius:12px;border:3px solid #a43b3b;background:#c54f4f;color:#fff;font-weight:bold;text-align:center;transition:.35s}.search-node.active{background:#1f6fb2;border-color:#0d4f86;transform:scale(1.08)}.search-node.good{background:#4d8b69;border-color:#3f7155}.arrow{font-size:24px}
+.pdf-report{font-family:Arial,"Noto Sans TC",sans-serif;color:#172033;line-height:1.75}.pdf-report h1,.pdf-report h2{color:#1d456b}.pdf-meta{background:#eef4f8;padding:12px;border-radius:8px;margin:12px 0}.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pdf-card,.pdf-text{border:1px solid #ccd7e0;border-radius:9px;padding:12px;margin:8px 0;word-break:break-word}.pdf-footer{margin-top:30px;font-size:12px;color:#66758a}#printReport{display:none}
+@media(max-width:700px){.container{padding:12px}.hero{padding:20px}.hero h1{font-size:27px}.start-form,.student-info{grid-template-columns:1fr}.result-grid,.status-grid{grid-template-columns:1fr 1fr}.tree{min-width:560px}}
+@media print{body.printing-report>*{display:none!important}body.printing-report{background:#fff;padding:28px}body.printing-report>#printReport{display:block!important}}
+</style></head><body>
+<div class="container">
+<div id="startScreen" class="start-screen"><div class="start-card"><span class="tag">高中資訊科技｜重補修</span><h1>單元三：二元搜尋樹</h1><p>開始學習前，請先輸入班級、座號與姓名。</p><div class="start-form"><label>班級<input id="startClass"></label><label>座號<input id="startNo"></label><label>姓名<input id="startName"></label></div><button class="primary" id="startLearning" type="button" onclick="startBSTLearning()">▶ 開始學習</button><p id="startError" class="feedback"></p></div></div>
+<header class="hero"><span class="tag">高中資訊科技｜重補修</span><h1>單元三：二元搜尋樹</h1><div>BST × 搜尋動畫 × 插入與搜尋判斷</div></header>
+<nav class="nav" id="nav"><button class="active" data-target="lesson">① 學習</button><button data-target="practice">② 練習</button><button data-target="quiz">③ 線上評量</button><button data-target="check">④ 學習檢查</button><button data-target="result">⑤ 學習成果</button></nav>
+
+<section id="lesson" class="section">
+<h2 class="page-title">① 學習：二元搜尋樹 BST</h2>
+
+<h3>一、二元搜尋樹 BST 定義</h3>
+<div class="grid">
+  <div class="card">
+    <h4>🌳 BST 是什麼？</h4>
+    <p><b>二元搜尋樹（Binary Search Tree，BST）</b>是一種具有排序規則的二元樹。</p>
+    <p>對每一個節點而言：</p>
+    <ul>
+      <li>左子樹中的資料值 <b>小於</b>目前節點。</li>
+      <li>右子樹中的資料值 <b>大於</b>目前節點。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>🔎 為什麼可以快速搜尋？</h4>
+    <p>每比較一次，就能判斷下一步往左或往右，因此不必把所有節點逐一檢查。</p>
+    <p class="note">搜尋值 ＜ 目前節點 → 往左；搜尋值 ＞ 目前節點 → 往右；相等 → 找到。</p>
+  </div>
+</div>
+
+<h3>二、逐步動畫觀察 BST 建構</h3>
+<p><b>逐步動畫示範：依序插入：{50, 30, 70, 20, 40}</b></p>
+<div class="tree-wrap">
+  <div class="tree" id="bstBuildTree"></div>
+</div>
+<div class="status-grid">
+  <div class="status-card">目前進度<div class="status-value" id="bstBuildProgress">尚未開始</div></div>
+  <div class="status-card">目前節點<div class="status-value" id="bstBuildCurrent">—</div></div>
+  <div class="status-card">已插入<div class="status-value" id="bstBuildCount">0 / 5</div></div>
+</div>
+<p id="bstBuildText" class="feedback">按「下一步」開始觀察 BST 如何逐步建立。</p>
+<div class="action-line">
+  <button class="primary" id="bstBuildNext">下一步</button>
+  <button class="secondary" id="bstBuildPlay">▶ 播放全部</button>
+  <button class="secondary" id="bstBuildReset">重設</button>
+</div>
+<div class="order-box" id="bstBuildRule">規則：每插入一個數字，都要依序比較目前節點，決定往左或往右。</div>
+
+<h3>三、問題挑戰</h3>
+<p><b>請將數字 {45, 25, 65, 15, 35} 填入下方正確的節點中。</b></p>
+<p>依照 BST 的「左小右大」規則，請將數字填入樹中的 5 個空格。</p>
+<div class="tree-wrap">
+  <div class="tree challenge-tree" id="bstChallengeTree">
+    <div class="edge" style="left:335px;top:60px;width:145px;transform:rotate(151deg)"></div>
+    <div class="edge" style="left:360px;top:60px;width:145px;transform:rotate(29deg)"></div>
+    <div class="edge" style="left:205px;top:140px;width:105px;transform:rotate(151deg)"></div>
+    <div class="edge" style="left:225px;top:140px;width:105px;transform:rotate(29deg)"></div>
+    <div class="node challenge-node" style="left:310px;top:35px" data-key="root">?</div>
+    <div class="node challenge-node" style="left:160px;top:115px" data-key="left">?</div>
+    <div class="node challenge-node" style="left:460px;top:115px" data-key="right">?</div>
+    <div class="node challenge-node" style="left:95px;top:210px" data-key="leftleft">?</div>
+    <div class="node challenge-node" style="left:225px;top:210px" data-key="leftright">?</div>
+  </div>
+</div>
+<div class="grid">
+  <div class="card"><label>根節點<input type="text" id="bstC_root" placeholder="輸入數字"></label></div>
+  <div class="card"><label>左子節點<input type="text" id="bstC_left" placeholder="輸入數字"></label></div>
+  <div class="card"><label>右子節點<input type="text" id="bstC_right" placeholder="輸入數字"></label></div>
+  <div class="card"><label>左左節點<input type="text" id="bstC_leftleft" placeholder="輸入數字"></label></div>
+  <div class="card"><label>左右節點<input type="text" id="bstC_leftright" placeholder="輸入數字"></label></div>
+</div>
+<button class="primary" id="bstChallengeCheck">檢核答案</button>
+<p id="bstChallengeFeedback" class="feedback"></p>
+
+<div class="conclusion">
+<h3>✅ 結論</h3>
+<p>BST 的核心規則是：<b>左小、右大</b>。插入新值時，從根節點開始比較，逐步決定往左或往右，直到找到適合的位置。</p>
+<label class="check-understand"><input type="checkbox">我明白了</label>
+</div>
+</section>
+
+<section id="practice" class="section">
+<h2 class="page-title">② 練習</h2>
+<p><b>依 BST 規則，將 50、30、70、20、40、60、80 依序插入，完成後回答：</b></p>
+<p>根節點：<input id="rootAns"></p><p>50 的左子節點：<input id="leftAns"></p><p>50 的右子節點：<input id="rightAns"></p>
+<button class="primary" id="bstPracticeSubmit">提交答案</button><p id="bstPracticeMsg" class="feedback"></p>
+<h3>🧠 情境題</h3><p>在搜尋 65 時，從 50 開始，應該往哪裡？</p><div id="bstChoice"><button class="choice" data-ok="1">1. 右子樹</button><button class="choice" data-ok="0">2. 左子樹</button></div>
+</section>
+<section id="quiz" class="section">
+<h2 class="page-title">③ 線上評量</h2>
+<div class="student-info">
+  <div>班級：<span id="quizClass">尚未填寫</span></div>
+  <div>座號：<span id="quizNo">尚未填寫</span></div>
+  <div>姓名：<span id="quizName">尚未填寫</span></div>
+</div>
+<p>共 10 題，每題 10 分。作答時不提示對錯，全部完成後按「交卷」。</p>
+
+<div class="question" data-answer="0"><b>1. 下圖是一棵二元搜尋樹。左子樹通常放？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div></div>
+<button class="choice">A. 較小鍵值</button><button class="choice">B. 較大鍵值</button><button class="choice">C. 隨機</button></div>
+
+<div class="question" data-answer="1"><b>2. 下圖是一棵二元搜尋樹。右子樹通常放？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div></div>
+<button class="choice">A. 較小鍵值</button><button class="choice">B. 較大鍵值</button><button class="choice">C. 全部相同</button></div>
+
+<div class="question" data-answer="1"><b>3. 根節點為 50，要搜尋 65。下一步應往哪裡？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div></div>
+<button class="choice">A. 左</button><button class="choice">B. 右</button><button class="choice">C. 停止</button></div>
+
+<div class="question" data-answer="0"><b>4. 目前節點為 30，要搜尋 20。下一步應往哪裡？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div><div class='quiz-mini-node ll'>20</div><div class='quiz-mini-node lr'>40</div></div>
+<button class="choice">A. 左</button><button class="choice">B. 右</button><button class="choice">C. 停止</button></div>
+
+<div class="question" data-answer="0"><b>5. BST 的中序走訪通常得到什麼結果？</b>
+<button class="choice">A. 由小到大的鍵值序列</button><button class="choice">B. 亂序</button><button class="choice">C. 只有根節點</button></div>
+
+<div class="question" data-answer="0"><b>6. 將 30 插入下圖 BST，應放在哪一側？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div></div>
+<button class="choice">A. 左</button><button class="choice">B. 右</button><button class="choice">C. 不一定</button></div>
+
+<div class="question" data-answer="1"><b>7. 將 70 插入下圖 BST，應放在哪一側？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div></div>
+<button class="choice">A. 左</button><button class="choice">B. 右</button><button class="choice">C. 刪除根</button></div>
+
+<div class="question" data-answer="0"><b>8. BST 搜尋時，每一步最重要的資訊是什麼？</b>
+<button class="choice">A. 比較鍵值</button><button class="choice">B. 顏色</button><button class="choice">C. 節點大小</button></div>
+
+<div class="question" data-answer="0"><b>9. 若搜尋目標等於目前節點，應該如何？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div></div>
+<button class="choice">A. 找到</button><button class="choice">B. 一定往左</button><button class="choice">C. 一定往右</button></div>
+
+<div class="question" data-answer="0"><b>10. 下圖的 BST，想搜尋 35，應先從哪個節點開始？</b>
+<div class='quiz-bst-mini'><div class='quiz-mini-node top'>50</div><div class='quiz-mini-node left'>30</div><div class='quiz-mini-node right'>70</div><div class='quiz-mini-node ll'>20</div><div class='quiz-mini-node lr'>40</div></div>
+<button class="choice">A. 根節點 50</button><button class="choice">B. 20</button><button class="choice">C. 70</button></div>
+
+<button class="primary" id="submitQuiz" type="button">交卷並計算成績</button>
+<p id="quizFeedback" class="feedback"></p>
+</section>
+<section id="check" class="section"><h2 class="page-title">④ 學習檢查</h2><div id="checks"><label class="check"><input type="checkbox">我知道 BST 的左小右大規則</label><label class="check"><input type="checkbox">我知道搜尋時要比較鍵值</label><label class="check"><input type="checkbox">我能判斷往左或右走</label><label class="check"><input type="checkbox">我能完成基本插入題</label></div><div class="meter"><div id="meter"></div></div><p id="checkText">目前完成 0 / 4</p><button class="primary" id="submitCheck">提交學習檢查</button><p id="checkMsg"></p><h3>我的學習心得</h3><textarea id="reflection" rows="6" minlength="100"></textarea><button class="primary" id="saveReflection">儲存心得</button></section>
+<section id="result" class="section"><h2 class="page-title">⑤ 學習成果</h2><div class="student-info"><div>班級：<span id="summaryClass"></span></div><div>座號：<span id="summaryNo"></span></div><div>姓名：<span id="summaryName"></span></div></div><div class="score" id="finalScore">尚未交卷</div><div class="result-grid"><div class="card">① 學習<span id="r1">尚未完成</span></div><div class="card">② 練習<span id="r2">尚未完成</span></div><div class="card">③ 評量<span id="r3">尚未完成</span></div><div class="card">④ 檢查<span id="r4">尚未完成</span></div></div><p>心得：<span id="r5">尚未完成</span></p><button class="primary" id="printPdf">🖨️ 產生 PDF 列印版</button></section>
+
+</div><div id="printReport"></div><script>
+(function(){
+var bstBuildSteps=[
+  {v:50,text:"1. 插入 50（作為根節點）"},
+  {v:30,text:"2. 插入 30：30 < 50，所以放在 50 的左子樹"},
+  {v:70,text:"3. 插入 70：70 > 50，所以放在 50 的右子樹"},
+  {v:20,text:"4. 插入 20：20 < 50，往左；20 < 30，放在 30 的左子樹"},
+  {v:40,text:"5. 插入 40：40 < 50，往左；40 > 30，放在 30 的右子樹"}
+];
+var bstBuildStep=0;
+
+function renderBSTBuild(step){
+  var box=document.getElementById("bstBuildTree");
+  box.innerHTML="";
+  var positions={
+    50:[310,35],30:[160,115],70:[460,115],20:[95,210],40:[225,210]
+  };
+  var active=bstBuildSteps[Math.max(0,step-1)]?bstBuildSteps[Math.max(0,step-1)].v:null;
+  var values=[];
+  if(step>=1)values.push(50);
+  if(step>=2)values.push(30);
+  if(step>=3)values.push(70);
+  if(step>=4)values.push(20);
+  if(step>=5)values.push(40);
+
+  var edges=[[50,30],[50,70],[30,20],[30,40]];
+  edges.forEach(function(e){
+    if(values.indexOf(e[0])!==-1 && values.indexOf(e[1])!==-1){
+      var a=positions[e[0]],b=positions[e[1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.sqrt(dx*dx+dy*dy),ang=Math.atan2(dy,dx)*180/Math.PI;
+      var line=document.createElement("div");line.className="edge";
+      line.style.width=len+"px";line.style.left=(a[0]+25)+"px";line.style.top=(a[1]+25)+"px";line.style.transform="rotate("+ang+"deg)";
+      box.appendChild(line);
+    }
+  });
+  values.forEach(function(v){
+    var d=document.createElement("div");d.className="node";
+    if(v===active)d.classList.add("active");
+    d.textContent=v;d.style.left=positions[v][0]+"px";d.style.top=positions[v][1]+"px";box.appendChild(d);
+  });
+
+  document.getElementById("bstBuildProgress").textContent=step===0?"尚未開始":"目前進度："+bstBuildSteps[step-1].text;
+  document.getElementById("bstBuildCurrent").textContent=step===0?"—":bstBuildSteps[step-1].v;
+  document.getElementById("bstBuildCount").textContent=step+" / 5";
+  document.getElementById("bstBuildText").textContent=step===0?"按「下一步」開始觀察 BST 如何逐步建立。":bstBuildSteps[step-1].text;
+}
+
+function bstBuildNextStep(){
+  if(bstBuildStep>=5)return;
+  bstBuildStep++;
+  renderBSTBuild(bstBuildStep);
+}
+function bstBuildReset(){
+  bstBuildStep=0;
+  renderBSTBuild(0);
+}
+document.getElementById("bstBuildNext").onclick=bstBuildNextStep;
+document.getElementById("bstBuildReset").onclick=bstBuildReset;
+document.getElementById("bstBuildPlay").onclick=function(){
+  bstBuildReset();
+  var timer=setInterval(function(){
+    bstBuildNextStep();
+    if(bstBuildStep>=5)clearInterval(timer);
+  },1000);
+};
+renderBSTBuild(0);
+
+document.getElementById("bstChallengeCheck").onclick=function(){
+  var ans={
+    root:document.getElementById("bstC_root").value.trim(),
+    left:document.getElementById("bstC_left").value.trim(),
+    right:document.getElementById("bstC_right").value.trim(),
+    leftleft:document.getElementById("bstC_leftleft").value.trim(),
+    leftright:document.getElementById("bstC_leftright").value.trim()
+  };
+  var ok=ans.root==="45"&&ans.left==="25"&&ans.right==="65"&&ans.leftleft==="15"&&ans.leftright==="35";
+  document.querySelectorAll(".challenge-node").forEach(function(n){n.classList.remove("active","done");});
+  if(ok){
+    document.querySelectorAll(".challenge-node").forEach(function(n){n.classList.add("done");});
+    document.getElementById("bstChallengeFeedback").textContent="✅ 正確！所有數字都符合 BST 的左小右大規則。";
+  }else{
+    document.getElementById("bstChallengeFeedback").textContent="❌ 答案有誤，請重新檢查每個節點與 45、25、65、15、35 的大小關係。";
+  }
+};
+
+var step=0,submitted=false;
+function show(id){document.querySelectorAll(".section").forEach(function(x){x.classList.remove("show")});document.getElementById(id).classList.add("show");document.querySelectorAll(".nav button").forEach(function(b){b.classList.toggle("active",b.dataset.target===id)});history.replaceState(null,"","#"+id);setTimeout(function(){document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"})},20);update();}
+document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){show(b.dataset.target)}});
+
+function bstStep(){var nodes=["b1","b2","b3"],texts=["比較 6 與 8：6 比 8 小，所以往左。","到達 3，比較 6 與 3：6 比 3 大，所以往右。","到達 6，找到目標！"];if(step>=3)return;document.querySelectorAll(".search-node").forEach(function(x){x.classList.remove("active","good")});document.getElementById(nodes[step]).classList.add(step===2?"good":"active");document.getElementById("bstText").textContent=texts[step];step++}
+function reset(){step=0;document.querySelectorAll(".search-node").forEach(function(x){x.classList.remove("active","good")});document.getElementById("bstText").textContent="按下一步觀看搜尋 6 的決策過程。"}
+document.getElementById("bstNext").onclick=bstStep;document.getElementById("bstReset").onclick=reset;document.getElementById("bstPlay").onclick=function(){reset();var t=setInterval(function(){bstStep();if(step>=3)clearInterval(t)},850)};
+function bind(id){document.querySelectorAll("#"+id+" .choice").forEach(function(b){b.onclick=function(){document.querySelectorAll("#"+id+" .choice").forEach(function(x){x.classList.remove("selected")});b.classList.add("selected")}})}bind("bstChoice");
+document.getElementById("bstPracticeSubmit").onclick=function(){var ok=document.getElementById("rootAns").value.trim()==="50"&&document.getElementById("leftAns").value.trim()==="30"&&document.getElementById("rightAns").value.trim()==="70";document.getElementById("bstPracticeMsg").textContent=ok?"✅ 已提交":"已提交";update()};
+
+var quizQuestions=document.querySelectorAll("#quizBox .question");
+if(!quizQuestions.length) quizQuestions=document.querySelectorAll("#quiz .question");
+quizQuestions.forEach(function(q){
+  q.querySelectorAll(".choice").forEach(function(btn,idx){
+    btn.addEventListener("click",function(){
+      q.querySelectorAll(".choice").forEach(function(x){x.classList.remove("selected");});
+      btn.classList.add("selected");
+      q.dataset.selected=idx;
+    });
+  });
+});
+document.getElementById("submitQuiz").addEventListener("click",function(){
+  var qs=quizQuestions,done=0,score=0;
+  qs.forEach(function(q){
+    if(q.dataset.selected!==undefined){
+      done++;
+      if(Number(q.dataset.selected)===Number(q.dataset.answer))score+=10;
+    }
+  });
+  var msg=document.getElementById("quizFeedback");
+  if(done<10){
+    msg.textContent="尚有 "+(10-done)+" 題未作答，請完成 10 題後再交卷。";
+    return;
+  }
+  msg.textContent="成績："+score+" / 100";
+  document.getElementById("finalScore").textContent=score+" / 100";
+  update();
+});
+var checks=document.querySelectorAll("#checks input");checks.forEach(function(c){c.onchange=update});document.getElementById("submitCheck").onclick=function(){submitted=true;document.getElementById("checkMsg").textContent="學習檢查已提交。";update()};document.getElementById("saveReflection").onclick=function(){document.getElementById("r5").textContent="已儲存";update()};
+function update(){var c=document.getElementById("startClass").value,n=document.getElementById("startNo").value,s=document.getElementById("startName").value;document.getElementById("summaryClass").textContent=c;document.getElementById("summaryNo").textContent=n;document.getElementById("summaryName").textContent=s;document.getElementById("quizClass").textContent=c;document.getElementById("quizNo").textContent=n;document.getElementById("quizName").textContent=s;var ncheck=[].filter.call(checks,function(x){return x.checked}).length;document.getElementById("meter").style.width=ncheck/4*100+"%";document.getElementById("checkText").textContent="目前完成 "+ncheck+" / 4";document.getElementById("r1").textContent="已閱讀";document.getElementById("r2").textContent="已完成練習";document.getElementById("r3").textContent=document.getElementById("finalScore").textContent;document.getElementById("r4").textContent=submitted?"已提交":"尚未完成";}
+update();
+document.getElementById("printPdf").onclick=function(){var c=document.getElementById("startClass").value,n=document.getElementById("startNo").value,s=document.getElementById("startName").value;var report=document.getElementById("printReport");report.innerHTML="<div class='pdf-report'><h1>單元三：二元搜尋樹</h1><div class='pdf-meta'>班級："+c+" 座號："+n+" 姓名："+s+"</div><h2>① 學習</h2><p>BST 左小右大與搜尋動畫。</p><h2>② 練習</h2><p>根節點："+document.getElementById("rootAns").value+"；左："+document.getElementById("leftAns").value+"；右："+document.getElementById("rightAns").value+"</p><h2>③ 評量</h2><p>"+document.getElementById("finalScore").textContent+"</p><p>評量包含 BST 結構圖與搜尋判斷題，學生作答紀錄已保留於本頁。</p><h2>④ 檢查</h2><p>"+document.getElementById("checkText").textContent+"</p><h2>⑤ 成果</h2><p>學習心得："+document.getElementById("reflection").value+"</p></div>";document.body.classList.add("printing-report");window.print();setTimeout(function(){document.body.classList.remove("printing-report")},500)};
+})();
+</script>
+<script>
+function startBSTLearning(){
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+
+  if(!c || !n || !s){
+    document.getElementById("startError").textContent="⚠️ 請完整填寫班級、座號與姓名。";
+    return;
+  }
+
+  document.getElementById("startError").textContent="";
+  document.getElementById("startScreen").style.display="none";
+  var nav=document.getElementById("nav");
+  nav.classList.add("ready");
+  nav.style.display="flex";
+
+  var sections=document.querySelectorAll(".section");
+  sections.forEach(function(sec){sec.classList.remove("show");});
+  var lesson=document.getElementById("lesson");
+  lesson.classList.add("show");
+
+  document.querySelectorAll(".nav button").forEach(function(b){
+    b.classList.toggle("active",b.getAttribute("data-target")==="lesson");
+  });
+
+  document.getElementById("quizClass").textContent=c;
+  document.getElementById("quizNo").textContent=n;
+  document.getElementById("quizName").textContent=s;
+  document.getElementById("summaryClass").textContent=c;
+  document.getElementById("summaryNo").textContent=n;
+  document.getElementById("summaryName").textContent=s;
+
+  if(history.replaceState){
+    history.replaceState(null,"","#lesson");
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body></html>

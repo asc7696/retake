@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>單元三：二元樹走訪</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans TC",sans-serif;background:#f4f7fa;color:#172033;line-height:1.7}
+.container{max-width:1150px;margin:auto;padding:20px}.hero{background:linear-gradient(135deg,#1d456b,#39729d);color:white;border-radius:20px;padding:28px;margin-bottom:18px}.hero h1{margin:8px 0;font-size:32px}
+.tag{display:inline-block;background:white;color:#1d456b;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold}
+.start-screen{position:fixed;inset:0;background:rgba(20,48,75,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.start-card{width:min(600px,100%);background:#fff;border-radius:20px;padding:28px;box-shadow:0 18px 50px #0004}.start-card h1{color:#1d456b}
+.start-form,.student-info{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;background:#eef4f8;padding:15px;border-radius:12px;margin:15px 0}.start-form label{font-weight:bold}.start-form input{display:block;width:100%;margin-top:5px;padding:11px;border:1px solid #cbd5df;border-radius:8px;font:inherit}
+.nav{display:none;gap:8px;overflow:auto;margin-bottom:18px}.nav.ready{display:flex}.nav button{border:0;padding:11px 16px;border-radius:22px;background:#e2e9ef;font-weight:bold;cursor:pointer;white-space:nowrap}.nav button.active{background:#1d456b;color:#fff}
+.section{display:none;background:#fff;border:1px solid #dce4eb;border-radius:17px;padding:22px;margin-bottom:16px;scroll-margin-top:20px}.section.show{display:block}
+.page-title{color:#1d456b;font-size:28px;margin:0 0 18px;padding-bottom:10px;border-bottom:3px solid #dbe6ef}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{border:1px solid #dce4eb;border-radius:13px;padding:15px}
+button.primary{border:0;background:#1d456b;color:white;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}button.secondary{border:0;background:#e4eaf0;color:#26384b;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #dce4eb;border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;font-size:15px}.choice.selected{background:#e6f1f9;border-color:#1d5f8d}
+textarea,input[type=text]{width:100%;padding:10px;border:1px solid #cbd5df;border-radius:8px;font:inherit}.feedback{font-weight:bold;min-height:26px}.note{background:#eef4f8;padding:13px;border-radius:10px;font-size:14px}
+.tree-wrap{background:#f8fafc;border:1px solid #dce4eb;border-radius:15px;padding:16px;margin:14px 0;overflow:auto}
+.quiz-tree-mini{position:relative;width:330px;height:190px;margin:12px auto;background:#f8fafc;border:1px solid #dce4eb;border-radius:12px}
+.mini-node{position:absolute;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#c54f4f;color:#fff;font-weight:700;border:2px solid #a43b3b;z-index:2}
+.mini-node.top{left:146px;top:12px}.mini-node.left{left:70px;top:72px}.mini-node.right{left:222px;top:72px}
+.mini-node.ll{left:32px;top:132px}.mini-node.lr{left:108px;top:132px}.mini-node.rl{left:184px;top:132px}.mini-node.rr{left:260px;top:132px}
+.mini-line{position:absolute;height:2px;background:#9aabb8;transform-origin:left center;width:88px;z-index:1}
+.mini-line.l1{left:160px;top:47px;transform:rotate(153deg)}.mini-line.l2{left:181px;top:47px;transform:rotate(27deg)}
+
+.tree{position:relative;min-width:620px;min-height:330px}.node{position:absolute;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#c54f4f;color:#fff;font-weight:bold;border:3px solid #a43b3b;transition:.35s;z-index:2}.node.active{background:#1f6fb2;border-color:#0d4f86;transform:scale(1.14);box-shadow:0 8px 18px #1f6fb255}.node.done{background:#4d8b69;border-color:#3f7155}.edge{position:absolute;height:3px;background:#9aabb8;transform-origin:left center;z-index:1}
+.traversal-controls{display:flex;gap:8px;flex-wrap:wrap}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.status-card{border:1px solid #dce4eb;border-radius:10px;padding:10px;text-align:center;background:#fff}.status-value{font-size:22px;font-weight:bold;color:#1d456b}
+.order-box{font-size:20px;font-weight:800;background:#eef4f8;border-radius:12px;padding:14px}.answer-table{width:100%;border-collapse:collapse}.answer-table th,.answer-table td{border:1px solid #d8e1e8;padding:9px;text-align:center}.answer-table th{background:#edf3f7}
+.check{display:block;padding:10px;border-bottom:1px solid #e5e9ed}.check input{width:20px;height:20px;margin-right:8px}.meter{height:12px;background:#e2e7ec;border-radius:10px;overflow:hidden;margin-top:15px}.meter div{height:100%;width:0;background:#1d456b;transition:width .3s}
+.score{font-size:42px;font-weight:bold}.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.check-understand{display:block;margin-top:8px;font-weight:bold}.check-understand input{width:19px;height:19px;margin-right:6px}
+.search-animation{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:18px;background:#f8fafc;border:1px solid #dce4eb;border-radius:14px}.search-node{min-width:130px;padding:12px;border-radius:12px;border:3px solid #a43b3b;background:#c54f4f;color:#fff;font-weight:bold;text-align:center;transition:.35s}.search-node.active{background:#1f6fb2;border-color:#0d4f86;transform:scale(1.08)}.search-node.good{background:#4d8b69;border-color:#3f7155}.arrow{font-size:24px}
+.pdf-report{font-family:Arial,"Noto Sans TC",sans-serif;color:#172033;line-height:1.75}.pdf-report h1,.pdf-report h2{color:#1d456b}.pdf-meta{background:#eef4f8;padding:12px;border-radius:8px;margin:12px 0}.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pdf-card,.pdf-text{border:1px solid #ccd7e0;border-radius:9px;padding:12px;margin:8px 0;word-break:break-word}.pdf-footer{margin-top:30px;font-size:12px;color:#66758a}#printReport{display:none}
+@media(max-width:700px){.container{padding:12px}.hero{padding:20px}.hero h1{font-size:27px}.start-form,.student-info{grid-template-columns:1fr}.result-grid,.status-grid{grid-template-columns:1fr 1fr}.tree{min-width:560px}}
+@media print{body.printing-report>*{display:none!important}body.printing-report{background:#fff;padding:28px}body.printing-report>#printReport{display:block!important}}
+</style></head><body>
+<div class="container">
+<div id="startScreen" class="start-screen"><div class="start-card"><span class="tag">高中資訊科技｜重補修</span><h1>單元三：二元樹走訪</h1><p>開始學習前，請先輸入班級、座號與姓名。</p><div class="start-form"><label>班級<input id="startClass"></label><label>座號<input id="startNo"></label><label>姓名<input id="startName"></label></div><button class="primary" id="startLearning" type="button">▶ 開始學習</button><p id="startError" class="feedback"></p></div></div>
+<header class="hero"><span class="tag">高中資訊科技｜重補修</span><h1>單元三：二元樹走訪</h1><div>前序 × 中序 × 後序 × 動畫走訪</div></header>
+<nav class="nav" id="nav"><button class="active" data-target="lesson">① 學習</button><button data-target="practice">② 練習</button><button data-target="quiz">③ 線上評量</button><button data-target="check">④ 學習檢查</button><button data-target="result">⑤ 學習成果</button></nav>
+
+<section id="lesson" class="section">
+<h2 class="page-title">① 學習：二元樹走訪</h2>
+<div class="grid"><div class="card"><b>前序 Preorder</b><p>根 → 左子樹 → 右子樹</p></div><div class="card"><b>中序 Inorder</b><p>左子樹 → 根 → 右子樹</p></div><div class="card"><b>後序 Postorder</b><p>左子樹 → 右子樹 → 根</p></div></div>
+<p class="note">三種走訪的差別，在於「根節點」什麼時候被讀取；左右子樹的處理方式保持遞迴的結構。</p>
+<h3>🎬 互動動畫</h3>
+<div class="tree-wrap"><div class="tree" id="tree1"></div></div>
+<div class="status-grid"><div class="status-card">目前方法<div class="status-value" id="travMethod">前序</div></div><div class="status-card">目前節點<div class="status-value" id="travCurrent">—</div></div><div class="status-card">已走訪<div class="status-value" id="travCount">0</div></div></div>
+<div class="order-box" id="travOrder">走訪序列：—</div><div class="traversal-controls"><button class="primary" id="preBtn">前序</button><button class="secondary" id="inBtn">中序</button><button class="secondary" id="postBtn">後序</button><button class="secondary" id="travNext">下一步</button><button class="secondary" id="travPlay">播放全部</button></div>
+<div class="conclusion"><h3>✅ 結論</h3><p>前序：根、左、右；中序：左、根、右；後序：左、右、根。</p><label class="check-understand"><input type="checkbox">我明白了</label></div>
+</section>
+
+<section id="practice" class="section">
+<h2 class="page-title">② 練習</h2>
+<h3>🌳 本題二元樹</h3>
+<p>請根據下方二元樹，寫出三種走訪結果。動畫中的樹與本題相同。</p>
+<div class="tree-wrap">
+  <div class="tree practice-tree" id="practiceTree">
+    <div class="edge" style="left:335px;top:60px;width:170px;transform:rotate(157deg)"></div>
+    <div class="edge" style="left:360px;top:60px;width:170px;transform:rotate(23deg)"></div>
+    <div class="edge" style="left:185px;top:140px;width:115px;transform:rotate(154deg)"></div>
+    <div class="edge" style="left:210px;top:140px;width:115px;transform:rotate(26deg)"></div>
+    <div class="edge" style="left:485px;top:140px;width:115px;transform:rotate(154deg)"></div>
+    <div class="edge" style="left:510px;top:140px;width:115px;transform:rotate(26deg)"></div>
+    <div class="node" style="left:310px;top:35px">4</div>
+    <div class="node" style="left:160px;top:115px">2</div>
+    <div class="node" style="left:460px;top:115px">6</div>
+    <div class="node" style="left:95px;top:210px">1</div>
+    <div class="node" style="left:225px;top:210px">3</div>
+    <div class="node" style="left:395px;top:210px">5</div>
+    <div class="node" style="left:525px;top:210px">7</div>
+  </div>
+</div>
+
+<p><b>請根據畫面上的二元樹，寫出三種走訪結果。</b></p>
+<table class="answer-table"><tr><th>走訪</th><th>你的答案</th></tr><tr><td>前序</td><td><input id="preAns"></td></tr><tr><td>中序</td><td><input id="inAns"></td></tr><tr><td>後序</td><td><input id="postAns"></td></tr></table>
+<button class="primary" id="checkTraversal">提交答案</button><p id="practiceMsg" class="feedback"></p>
+<h3>🧠 判斷題</h3><p>哪一種走訪是「左 → 根 → 右」？</p><div id="travChoice"><button class="choice" data-ok="0">1. 前序</button><button class="choice" data-ok="1">2. 中序</button><button class="choice" data-ok="0">3. 後序</button></div>
+</section>
+<section id="quiz" class="section"><h2 class="page-title">③ 線上評量</h2><div class="student-info"><div>班級：<span id="quizClass">尚未填寫</span></div><div>座號：<span id="quizNo">尚未填寫</span></div><div>姓名：<span id="quizName">尚未填寫</span></div></div><p>10題、100分，作答時不提示對錯，全部完成後交卷。</p><div id="quizBox"></div><button class="primary" id="submitQuiz">交卷並計算成績</button><p id="quizFeedback" class="feedback"></p></section>
+<section id="check" class="section"><h2 class="page-title">④ 學習檢查</h2><div id="checks"><label class="check"><input type="checkbox">我知道前序是根→左→右</label><label class="check"><input type="checkbox">我知道中序是左→根→右</label><label class="check"><input type="checkbox">我知道後序是左→右→根</label><label class="check"><input type="checkbox">我能看懂動畫走訪節點的順序</label></div><div class="meter"><div id="meter"></div></div><p id="checkText">目前完成 0 / 4</p><button class="primary" id="submitCheck">提交學習檢查</button><p id="checkMsg" class="feedback"></p><h3>我的學習心得</h3><textarea id="reflection" rows="6" minlength="100" placeholder="至少100字"></textarea><button class="primary" id="saveReflection">儲存心得</button></section>
+<section id="result" class="section"><h2 class="page-title">⑤ 學習成果</h2><div class="student-info"><div>班級：<span id="summaryClass"></span></div><div>座號：<span id="summaryNo"></span></div><div>姓名：<span id="summaryName"></span></div></div><div class="score" id="finalScore">尚未交卷</div><div class="result-grid"><div class="card">① 學習<span id="r1">尚未完成</span></div><div class="card">② 練習<span id="r2">尚未完成</span></div><div class="card">③ 評量<span id="r3">尚未完成</span></div><div class="card">④ 檢查<span id="r4">尚未完成</span></div></div><p><b>心得：</b><span id="r5">尚未完成</span></p><button class="primary" id="printPdf">🖨️ 產生 PDF 列印版</button></section>
+
+</div><div id="printReport"></div><script>
+(function(){
+var started=false, method="pre", seq=[], idx=0, submitted=false;
+var nodes={1:[310,35],2:[160,115],3:[460,115],4:[95,210],5:[225,210],6:[395,210],7:[525,210]};
+var treeData={1:{v:4,l:2,r:3},2:{v:2,l:4,r:5},3:{v:6,l:6,r:7},4:{v:1},5:{v:3},6:{v:5},7:{v:7}};
+function drawTree(){
+ var box=document.getElementById("tree1");box.innerHTML="";
+ [[1,2],[1,3],[2,4],[2,5],[3,6],[3,7]].forEach(function(e){
+  var a=nodes[e[0]],b=nodes[e[1]],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.sqrt(dx*dx+dy*dy),ang=Math.atan2(dy,dx)*180/Math.PI;
+  var edge=document.createElement("div");edge.className="edge";edge.style.width=len+"px";edge.style.left=a[0]+25+"px";edge.style.top=a[1]+25+"px";edge.style.transform="rotate("+ang+"deg)";box.appendChild(edge);
+ });
+ Object.keys(nodes).forEach(function(k){var d=document.createElement("div");d.className="node";d.id="n"+k;d.textContent=treeData[k].v;d.style.left=nodes[k][0]+"px";d.style.top=nodes[k][1]+"px";box.appendChild(d);});
+}
+function makeSeq(m){
+ if(m==="pre")return [1,2,4,5,3,6,7];
+ if(m==="in")return [4,2,5,1,6,3,7];
+ return [4,5,2,6,7,3,1];
+}
+function setMethod(m){method=m;seq=makeSeq(m);idx=0;document.getElementById("travMethod").textContent=m==="pre"?"前序":m==="in"?"中序":"後序";document.getElementById("travOrder").textContent="走訪序列：";drawTree();}
+function travStep(){if(idx>=seq.length){return}document.querySelectorAll(".node").forEach(function(x){x.classList.remove("active");});var k=seq[idx];document.getElementById("n"+k).classList.add("active");document.getElementById("travCurrent").textContent=treeData[k].v;document.getElementById("travCount").textContent=idx+1;document.getElementById("travOrder").textContent="走訪序列："+seq.slice(0,idx+1).map(function(k){return treeData[k].v;}).join(" → ");idx++;}
+function play(){idx=0;var t=setInterval(function(){travStep();if(idx>=seq.length)clearInterval(t);},800);}
+function show(id){document.querySelectorAll(".section").forEach(function(x){x.classList.remove("show")});document.getElementById(id).classList.add("show");document.querySelectorAll(".nav button").forEach(function(b){b.classList.toggle("active",b.dataset.target===id)});history.replaceState(null,"","#"+id);setTimeout(function(){document.getElementById(id).scrollIntoView({behavior:"smooth",block:"start"})},20);update();}
+document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){show(b.dataset.target)}});drawTree();
+document.getElementById("preBtn").onclick=function(){setMethod("pre")};document.getElementById("inBtn").onclick=function(){setMethod("in")};document.getElementById("postBtn").onclick=function(){setMethod("post")};document.getElementById("travNext").onclick=travStep;document.getElementById("travPlay").onclick=play;
+function bind(id){document.querySelectorAll("#"+id+" .choice").forEach(function(b){b.onclick=function(){document.querySelectorAll("#"+id+" .choice").forEach(function(x){x.classList.remove("selected")});b.classList.add("selected")}})}bind("travChoice");
+document.getElementById("checkTraversal").onclick=function(){var a=function(id){return document.getElementById(id).value.trim().replace(/，/g," ").replace(/,/g," ").replace(/\s+/g," ")};var ok=a("preAns")==="4 2 1 3 6 5 7"&&a("inAns")==="1 2 3 4 5 6 7"&&a("postAns")==="1 3 2 5 7 6 4";document.getElementById("practiceMsg").textContent=ok?"✅ 已提交":"已提交，請自行核對。";update();};
+var qs=[["前序的節點順序是？",["根→左→右","左→根→右","左→右→根"],0],["中序的節點順序是？",["根→左→右","左→根→右","左→右→根"],1],["後序的節點順序是？",["根→左→右","左→根→右","左→右→根"],2],["二元樹每個節點最多有幾個子節點？",["1","2","3"],1],["哪種走訪是左→根→右？",["前序","中序","後序"],1],["哪種走訪是根最先被讀取？",["前序","中序","後序"],0],["哪種走訪是根最後被讀取？",["前序","中序","後序"],2],["走訪的目的主要是？",["按照規則拜訪節點","刪除所有節點","只找最大值"],0],["圖中的根節點是？<div class='quiz-tree-mini'><div class='mini-node top'>4</div><div class='mini-line l1'></div><div class='mini-line l2'></div><div class='mini-node left'>2</div><div class='mini-node right'>6</div><div class='mini-node ll'>1</div><div class='mini-node lr'>3</div><div class='mini-node rl'>5</div><div class='mini-node rr'>7</div></div>",["1","4","7"],0],["本動畫的中序結果是？<div class='quiz-tree-mini'><div class='mini-node top'>4</div><div class='mini-line l1'></div><div class='mini-line l2'></div><div class='mini-node left'>2</div><div class='mini-node right'>6</div><div class='mini-node ll'>1</div><div class='mini-node lr'>3</div><div class='mini-node rl'>5</div><div class='mini-node rr'>7</div></div>",["4 2 5 1 6 3 7","1 2 3 4 5 6 7","4 5 2 6 7 3 1"],0]];
+var qb=document.getElementById("quizBox");qs.forEach(function(q,i){var d=document.createElement("div");d.className="question";d.innerHTML="<b>"+(i+1)+". "+q[0]+"</b>";q[1].forEach(function(o,j){var b=document.createElement("button");b.className="choice";b.type="button";b.textContent=String.fromCharCode(65+j)+". "+o;b.onclick=function(){d.querySelectorAll(".choice").forEach(function(x){x.classList.remove("selected")});b.classList.add("selected");d.dataset.a=j};d.appendChild(b)});qb.appendChild(d)});
+document.getElementById("submitQuiz").onclick=function(){var q=qb.querySelectorAll(".question"),done=0,sc=0;q.forEach(function(d,i){if(d.dataset.a!==undefined){done++;if(+d.dataset.a===qs[i][2])sc+=10}});document.getElementById("quizFeedback").textContent=done<10?"尚有 "+(10-done)+" 題未作答。":"成績："+sc+" / 100";if(done===10)document.getElementById("finalScore").textContent=sc+" / 100";update()};
+var checks=document.querySelectorAll("#checks input");checks.forEach(function(c){c.onchange=update});document.getElementById("submitCheck").onclick=function(){submitted=true;document.getElementById("checkMsg").textContent="學習檢查已提交。";update()};document.getElementById("saveReflection").onclick=function(){document.getElementById("r5").textContent="已儲存";update()};
+function update(){var c=document.getElementById("startClass").value,n=document.getElementById("startNo").value,s=document.getElementById("startName").value;document.getElementById("summaryClass").textContent=c;document.getElementById("summaryNo").textContent=n;document.getElementById("summaryName").textContent=s;document.getElementById("quizClass").textContent=c;document.getElementById("quizNo").textContent=n;document.getElementById("quizName").textContent=s;var ncheck=[].filter.call(checks,function(x){return x.checked}).length;document.getElementById("meter").style.width=ncheck/4*100+"%";document.getElementById("checkText").textContent="目前完成 "+ncheck+" / 4";document.getElementById("r1").textContent="已閱讀";document.getElementById("r2").textContent="已完成練習";document.getElementById("r3").textContent=document.getElementById("finalScore").textContent;document.getElementById("r4").textContent=submitted?"已提交":"尚未完成";}
+document.getElementById("startLearning").onclick=function(){var c=document.getElementById("startClass").value.trim(),n=document.getElementById("startNo").value.trim(),s=document.getElementById("startName").value.trim();if(!c||!n||!s){document.getElementById("startError").textContent="請完整填寫資料。";return}document.getElementById("startScreen").style.display="none";document.getElementById("nav").classList.add("ready");show("lesson")};update();
+document.getElementById("printPdf").onclick=function(){var report=document.getElementById("printReport");report.innerHTML="<div class='pdf-report'><h1>單元三：二元樹走訪</h1><div class='pdf-meta'>班級："+c+" 座號："+n+" 姓名："+s+"</div><h2>① 學習</h2><p>前序、 中序、 後序與動畫走訪成果。</p><h2>② 練習</h2><p>前序："+document.getElementById("preAns").value+"</p><p>中序："+document.getElementById("inAns").value+"</p><p>後序："+document.getElementById("postAns").value+"</p><h2>③ 評量</h2><p>"+document.getElementById("finalScore").textContent+"</p><h2>④ 檢查</h2><p>"+document.getElementById("checkText").textContent+"</p><h2>⑤ 成果</h2><p>學習心得："+document.getElementById("reflection").value+"</p></div>";document.body.classList.add("printing-report");window.print();setTimeout(function(){document.body.classList.remove("printing-report")},500)};
+})();
+</script></body></html>
