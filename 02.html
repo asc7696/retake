@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資訊科技重補修｜單元二：排序法</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans TC",sans-serif;background:#f4f7fa;color:#172033;line-height:1.7}
+.container{max-width:1100px;margin:auto;padding:20px}
+.hero{background:linear-gradient(135deg,#1d456b,#39729d);color:white;border-radius:20px;padding:28px;margin-bottom:18px}
+.hero h1{margin:8px 0;font-size:32px}
+.tag{display:inline-block;background:white;color:#1d456b;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold}
+.start-screen{position:fixed;inset:0;pointer-events:auto;background:rgba(20,48,75,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.start-card{width:min(600px,100%);position:relative;z-index:10000;background:#fff;border-radius:20px;padding:28px;box-shadow:0 18px 50px #0004}
+.start-card h1{color:#1d456b;margin:10px 0}
+.start-form{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;margin:18px 0}
+.start-form label,.student-info label{font-weight:bold}
+.start-form input,.student-info input{display:block;width:100%;margin-top:5px;padding:11px;border:1px solid #cbd5df;border-radius:8px;font:inherit}
+.nav{display:none;gap:8px;overflow:auto;margin-bottom:18px}
+.nav.ready{display:flex}
+.nav button{border:0;padding:11px 16px;border-radius:22px;background:#e2e9ef;font-weight:bold;cursor:pointer;white-space:nowrap}
+.nav button.active{background:#1d456b;color:white}
+.section{display:none;background:white;border:1px solid #dce4eb;border-radius:17px;padding:22px;margin-bottom:16px}
+.section.show{display:block}
+.page-title{color:#1d456b;font-size:28px;margin:0 0 18px;padding-bottom:10px;border-bottom:3px solid #dbe6ef}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{border:1px solid #dce4eb;border-radius:13px;padding:15px}
+button.primary{border:0;background:#1d456b;color:white;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+button.secondary{border:0;background:#e4eaf0;color:#26384b;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+textarea{width:100%;padding:12px;border:1px solid #cbd5df;border-radius:9px;font:inherit}
+.feedback{font-weight:bold;min-height:26px}
+.note{background:#eef4f8;padding:13px;border-radius:10px;font-size:14px}
+.video-box{background:#f7fafc;border:1px solid #dce4eb;border-radius:14px;padding:16px;margin:20px 0}
+.video-link{display:inline-block;background:#c62828;color:#fff;text-decoration:none;padding:13px 20px;border-radius:10px;font-weight:bold}
+.sort-stage{background:#f8fafc;border:1px solid #dce4eb;border-radius:15px;padding:18px;margin:14px 0}
+.bars{display:flex;gap:10px;align-items:flex-end;justify-content:center;min-height:190px;padding:10px;flex-wrap:wrap}
+.bar-item{width:64px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bar-rect{width:52px;background:#8b4f4f;color:white;border-radius:8px 8px 3px 3px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-weight:bold;transition:all .45s}
+.bar-item.current .bar-rect{background:#1f6fb2;transform:scale(1.08);box-shadow:0 8px 18px #1f6fb255}
+.bar-item.done .bar-rect{background:#3f8061}
+.bar-label{font-weight:bold}
+.round-badge{display:inline-block;background:#e7edf2;border-radius:20px;padding:5px 10px;font-weight:bold}
+.round-badge.blue{background:#dcecf8;color:#155683}
+.question{padding:16px 0;border-bottom:1px solid #e1e6eb}
+.choice{display:block;width:100%;text-align:left;background:white;border:2px solid #dce4eb;border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;font-size:15px}
+.choice.selected{background:#e6f1f9;border-color:#1d5f8d}
+.round-table{width:100%;border-collapse:collapse;margin-top:10px}
+.round-table th,.round-table td{border:1px solid #d8e1e8;padding:9px;text-align:center}
+.round-table th{background:#edf3f7}
+.student-info{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;background:#eef4f8;padding:15px;border-radius:12px;margin:12px 0 18px}
+.check{display:block;padding:10px;border-bottom:1px solid #e5e9ed}
+.check input{width:20px;height:20px;margin-right:8px}
+.meter{height:12px;background:#e2e7ec;border-radius:10px;overflow:hidden;margin-top:15px}
+.meter div{height:100%;width:0;background:#1d456b;transition:width .3s}
+.score{font-size:42px;font-weight:bold}
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pdf-report{font-family:Arial,"Noto Sans TC",sans-serif;color:#172033;line-height:1.75}
+.pdf-report h1,.pdf-report h2{color:#1d456b}
+.pdf-meta{background:#eef4f8;padding:12px;border-radius:8px;margin:12px 0}
+.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pdf-card,.pdf-text{border:1px solid #ccd7e0;border-radius:9px;padding:12px;margin:8px 0;word-break:break-word}.pdf-table{width:100%;border-collapse:collapse;margin:10px 0}.pdf-table th,.pdf-table td{border:1px solid #ccd7e0;padding:7px;text-align:center}.pdf-table th{background:#eef4f8}
+.pdf-footer{margin-top:30px;font-size:12px;color:#66758a}
+#printReport{display:none}
+@media(max-width:700px){.container{padding:12px}.hero{padding:20px}.hero h1{font-size:27px}.section{padding:16px}.start-form,.student-info{grid-template-columns:1fr}.result-grid{grid-template-columns:1fr 1fr}.bar-item{width:55px}.bar-rect{width:44px}}
+@media print{
+body.printing-report>*{display:none!important}
+body.printing-report{background:#fff;padding:28px}
+body.printing-report>#printReport{display:block!important}
+}
+.conclusion{margin-top:22px;border-top:2px solid #dbe6ef;padding-top:16px}.check-understand{display:block;margin:8px 0;font-weight:bold}.check-understand input{width:19px;height:19px;margin-right:6px}.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.status-card{border:1px solid #dce4eb;border-radius:10px;padding:10px;text-align:center}.status-value{font-size:22px;font-weight:bold;color:#1d456b}.bar-item.current2 .bar-rect{background:#4d83b2;transform:scale(1.06)}.bar-item.sorted .bar-rect{background:#4d8b69}.selected{background:#e6f1f9;border-color:#1d5f8d}@media(max-width:700px){.status-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div id="startScreen" class="start-screen">
+  <div class="start-card">
+    <span class="tag">高中資訊科技｜重補修</span>
+    <h1>單元二：排序法</h1>
+    <p>開始學習前，請先輸入你的班級、座號與姓名。</p>
+    <div class="start-form">
+      <label>班級<input type="text" id="startClass" placeholder="例如：一年一班"></label>
+      <label>座號<input type="text" id="startNo" placeholder="例如：12"></label>
+      <label>姓名<input type="text" id="startName" placeholder="請輸入姓名"></label>
+    </div>
+    <button class="primary" id="startLearning" type="button">▶ 開始學習</button>
+    <p id="startError" class="feedback"></p><p id="startedMessage" class="feedback"></p>
+  </div>
+</div>
+
+<header class="hero">
+<span class="tag">高中資訊科技｜重補修</span>
+<h1>單元二：排序法</h1>
+<div>氣泡排序法 × 選擇排序法 × 動畫模擬 × 線上評量</div>
+</header>
+
+<nav class="nav" id="nav">
+<button class="active" data-target="bubble">① 氣泡排序</button>
+<button data-target="selection">② 選擇排序</button>
+<button data-target="quiz">③ 線上評量</button>
+<button data-target="check">④ 學習檢查</button>
+<button data-target="result">⑤ 學習成果</button>
+</nav>
+
+<section id="bubble" class="section">
+<h2 class="page-title">① 氣泡排序</h2>
+
+<div class="video-box">
+<h3>🎬 排序法影音：先看氣泡排序法</h3>
+<p>請先觀看影片，再進行下面的動畫與題目。</p>
+<a class="video-link" href="https://www.youtube.com/watch?v=2Gp5kohphy0&t=50s" target="_blank" rel="noopener noreferrer">▶ 開啟氣泡排序影音（新分頁）</a>
+<p class="note">觀察重點：比較相鄰的兩個數字，若左邊比右邊大就交換。</p>
+</div>
+
+<h3>🔎 氣泡排序的核心概念</h3>
+<div class="grid">
+<div class="card"><b>Step 1：比較相鄰元素</b><p>從左到右比較相鄰的兩個數字。</p></div>
+<div class="card"><b>Step 2：需要就交換</b><p>由小到大排序時，若左邊較大，就交換位置。</p></div>
+<div class="card"><b>Step 3：最大值向右移</b><p>一輪完成後，這一輪最大的數會「冒泡」到最右邊。</p></div>
+</div>
+
+<h3>🎬 動畫展示：8、2、6、10、4</h3>
+<div class="sort-stage">
+<div class="round-badge blue" id="bubbleRound">尚未開始</div>
+<div class="status-grid">
+<div class="status-card">目前比較次數<div class="status-value" id="bubbleCompareCurrent">0</div></div>
+<div class="status-card">目前交換次數<div class="status-value" id="bubbleSwapCurrent">0</div></div>
+<div class="status-card">本輪比較次數<div class="status-value" id="bubbleCompareRound">0</div></div>
+<div class="status-card">本輪交換次數<div class="status-value" id="bubbleSwapRound">0</div></div>
+</div>
+<div class="bars" id="bubbleBars"></div>
+<p id="bubbleAnimationText" class="feedback">按下「下一步」逐步觀看比較與交換。</p>
+<button class="primary" id="bubblePlay">▶ 播放全部</button>
+<button class="secondary" id="bubbleNext">下一步</button>
+<button class="secondary" id="bubbleReset">重設動畫</button>
+</div>
+
+<h3>📝 任務一</h3>
+<p><b>將 8、2、6、10、4 由小到大，以氣泡排序法排序，寫出每一輪的排序結果。</b></p>
+<table class="round-table">
+<tr><th>輪次</th><th>排序結果</th><th>比較次數</th><th>交換次數</th></tr>
+<tr><td>第1輪</td><td><input type="text" id="b1"></td><td><input type="number" id="bc1"></td><td><input type="number" id="bs1"></td></tr>
+<tr><td>第2輪</td><td><input type="text" id="b2"></td><td><input type="number" id="bc2"></td><td><input type="number" id="bs2"></td></tr>
+<tr><td>第3輪</td><td><input type="text" id="b3"></td><td><input type="number" id="bc3"></td><td><input type="number" id="bs3"></td></tr>
+<tr><td>第4輪</td><td><input type="text" id="b4"></td><td><input type="number" id="bc4"></td><td><input type="number" id="bs4"></td></tr>
+</table>
+<button class="primary" id="checkBubble1">檢查答案</button>
+<p id="bubbleAns1" class="feedback"></p>
+
+<h3>🧠 選擇題 1</h3>
+<p>使用氣泡排序法由小到大排序，第一輪會產生什麼結果？</p>
+<div id="bubbleChoice1">
+<button class="choice" data-ok="1">1. 最大的數字在最右邊</button>
+<button class="choice" data-ok="0">2. 最大的數字在最左邊</button>
+<button class="choice" data-ok="0">3. 最小的數字在最右邊</button>
+<button class="choice" data-ok="0">4. 最小的數字在最左邊</button>
+</div>
+<p id="bubbleChoice1Feedback" class="feedback"></p>
+
+<h3>📝 任務二</h3>
+<p><b>將 7、9、5、4、3 由小到大，以氣泡排序法排序，寫出每一輪的排序結果。</b></p>
+<table class="round-table">
+<tr><th>輪次</th><th>排序結果</th><th>比較次數</th><th>交換次數</th></tr>
+<tr><td>第1輪</td><td><input type="text" id="c1"></td><td><input type="number" id="cc1"></td><td><input type="number" id="cs1"></td></tr>
+<tr><td>第2輪</td><td><input type="text" id="c2"></td><td><input type="number" id="cc2"></td><td><input type="number" id="cs2"></td></tr>
+<tr><td>第3輪</td><td><input type="text" id="c3"></td><td><input type="number" id="cc3"></td><td><input type="number" id="cs3"></td></tr>
+<tr><td>第4輪</td><td><input type="text" id="c4"></td><td><input type="number" id="cc4"></td><td><input type="number" id="cs4"></td></tr>
+</table>
+<button class="primary" id="checkBubble2">檢查答案</button>
+<p id="bubbleAns2" class="feedback"></p>
+
+
+<div class="conclusion">
+<h3>✅ 結論：氣泡排序法</h3>
+<p><b>作法：</b>從頭開始逐一比較相鄰的兩個元素，如果順序錯誤就立刻互換。</p><label class="check-understand"><input type="checkbox" id="bubbleUnderstand1"> 我明白了</label>
+<p><b>每輪結束時：</b>由小到大排序時，目前最大的元素會往右側移動。</p><label class="check-understand"><input type="checkbox" id="bubbleUnderstand2"> 我明白了</label>
+<p><b>交換次數可能很多：</b>每一輪的比較次數與交換次數要分開計算。</p><label class="check-understand"><input type="checkbox" id="bubbleUnderstand3"> 我明白了</label>
+</div>
+</section>
+
+<section id="selection" class="section">
+<h2 class="page-title">② 選擇排序</h2>
+
+<h3>🔎 選擇排序的核心概念</h3>
+<div class="grid">
+<div class="card"><b>Step 1：找最小值</b><p>從尚未排序的資料中找出最小值。</p></div>
+<div class="card"><b>Step 2：放到正確位置</b><p>把最小值放到目前最前面的空位。</p></div>
+<div class="card"><b>Step 3：縮小範圍</b><p>完成一輪後，左側的資料就是已排序區。</p></div>
+</div>
+
+<h3>🎬 動畫展示：8、2、6、10、4</h3>
+<p>觀察藍色方框：藍色代表「目前正在處理／選出的最小值」，綠色代表「已完成排序」。</p>
+<div class="sort-stage">
+<div class="round-badge blue" id="selectionRound">尚未開始</div>
+<div class="status-grid">
+<div class="status-card">目前比較次數<div class="status-value" id="selectionCompareCurrent">0</div></div>
+<div class="status-card">目前交換次數<div class="status-value" id="selectionSwapCurrent">0</div></div>
+<div class="status-card">本輪比較次數<div class="status-value" id="selectionCompareRound">0</div></div>
+<div class="status-card">本輪交換次數<div class="status-value" id="selectionSwapRound">0</div></div>
+</div>
+<div class="bars" id="selectionBars"></div>
+<p id="selectionText" class="feedback">按下「下一步」逐步觀看掃描與交換。</p>
+<button class="primary" id="selectionPlay">▶ 播放全部</button>
+<button class="secondary" id="selectionNext">下一步</button>
+<button class="secondary" id="selectionReset">重設動畫</button>
+</div>
+
+<h3>📝 任務一</h3>
+<p>請根據動畫，寫出每一輪的排序結果。</p>
+<table class="round-table">
+<tr><th>輪次</th><th>排序結果</th><th>比較次數</th><th>交換次數</th></tr>
+<tr><td>第1輪</td><td><input type="text" id="s1"></td><td><input type="number" id="sc1"></td><td><input type="number" id="ss1"></td></tr>
+<tr><td>第2輪</td><td><input type="text" id="s2"></td><td><input type="number" id="sc2"></td><td><input type="number" id="ss2"></td></tr>
+<tr><td>第3輪</td><td><input type="text" id="s3"></td><td><input type="number" id="sc3"></td><td><input type="number" id="ss3"></td></tr>
+<tr><td>第4輪</td><td><input type="text" id="s4"></td><td><input type="number" id="sc4"></td><td><input type="number" id="ss4"></td></tr>
+</table>
+<button class="primary" id="checkSelection1">檢查答案</button>
+<p id="selectionAns1" class="feedback"></p>
+
+<h3>🧠 選擇題 1</h3>
+<p>選擇排序法由小到大排序時，每一輪主要做什麼？</p>
+<div id="selectionChoice1">
+<button class="choice" data-ok="0">1. 找出最大值放到最左邊</button>
+<button class="choice" data-ok="1">2. 從未排序區找出最小值，放到正確位置</button>
+<button class="choice" data-ok="0">3. 每次只比較最後兩個數字</button>
+<button class="choice" data-ok="0">4. 隨機交換兩個數字</button>
+</div>
+<p id="selectionChoice1Feedback" class="feedback"></p>
+
+<h3>🧠 選擇題 2</h3>
+<p>使用選擇排序法將 6、3、8、2 由小到大排序，第一輪完成後的結果是？</p>
+<div id="selectionChoice2">
+<button class="choice" data-ok="1">1. 2、3、8、6</button>
+<button class="choice" data-ok="0">2. 3、6、8、2</button>
+<button class="choice" data-ok="0">3. 6、2、8、3</button>
+<button class="choice" data-ok="0">4. 8、3、6、2</button>
+</div>
+<p id="selectionChoice2Feedback" class="feedback"></p>
+
+<h3>🧩 開放問題：判斷排序法</h3>
+<p><b>觀察下列 5 個數字的四輪排序變化，判斷這是哪一種排序法。</b></p>
+<div class="formula-box">
+<p>原始資料：6、2、9、4、7</p>
+<p>第1輪：2、6、9、4、7</p>
+<p>第2輪：2、4、9、6、7</p>
+<p>第3輪：2、4、6、9、7</p>
+<p>第4輪：2、4、6、7、9</p>
+</div>
+<div id="methodQuestion">
+<button class="choice" data-ok="0">1. 氣泡排序法，由小到大</button>
+<button class="choice" data-ok="0">2. 氣泡排序法，由大到小</button>
+<button class="choice" data-ok="1">3. 選擇排序法，由小到大</button>
+<button class="choice" data-ok="0">4. 選擇排序法，由大到小</button>
+</div>
+<p id="methodQuestionFeedback" class="feedback"></p>
+<div class="conclusion">
+<h3>✅ 結論：選擇排序法</h3>
+<p><b>作法：</b>從未排序的資料中完整掃描一遍，找出最小或最大的元素，再放到已排序區間的最旁邊。</p><label class="check-understand"><input type="checkbox" id="selectionUnderstand1"> 我明白了</label>
+<p><b>每輪掃描：</b>要做多次比較；找到目標元素後，再進行交換。</p><label class="check-understand"><input type="checkbox" id="selectionUnderstand2"> 我明白了</label>
+<p><b>交換差異：</b>選擇排序每輪通常最多只做一次交換，因此交換次數通常比氣泡排序少。</p><label class="check-understand"><input type="checkbox" id="selectionUnderstand3"> 我明白了</label>
+</div>
+</section>
+
+<section id="quiz" class="section">
+<h2 class="page-title">③ 線上評量</h2>
+<div class="student-info">
+<div><b>班級：</b><span id="quizClass">尚未填寫</span></div>
+<div><b>座號：</b><span id="quizNo">尚未填寫</span></div>
+<div><b>姓名：</b><span id="quizName">尚未填寫</span></div>
+</div>
+<p>共 10 題，每題 10 分，請完成全部題目後交卷。</p>
+<div id="quizBox"></div>
+<button class="primary" id="submitQuiz">交卷並計算成績</button>
+<p id="quizFeedback" class="feedback"></p>
+</section>
+
+<section id="check" class="section">
+<h2 class="page-title">④ 學習檢查</h2>
+<p>請確認你已經掌握本單元的核心概念。</p>
+<div id="checks">
+<label class="check"><input type="checkbox">我知道氣泡排序法會比較相鄰元素</label>
+<label class="check"><input type="checkbox">我知道氣泡排序由小到大時，一輪後最大值會到最右邊</label>
+<label class="check"><input type="checkbox">我能寫出氣泡排序每一輪的結果</label>
+<label class="check"><input type="checkbox">我知道選擇排序法會從未排序區找最小值</label>
+<label class="check"><input type="checkbox">我能說明選擇排序與氣泡排序的差異</label>
+<label class="check"><input type="checkbox">我能看懂排序動畫並說出目前正在進行的步驟</label>
+</div>
+<div class="meter"><div id="meter"></div></div>
+<p id="checkText">目前完成 0 / 6</p>
+
+<h3>✍️ 我的排序學習心得</h3>
+<textarea id="reflection" rows="7" minlength="150" placeholder="請至少150字，說明你今天學會了什麼、哪一種排序比較容易理解，以及你在排序過程中遇到的問題。"></textarea>
+<p id="reflectionCount" class="note">目前 0 字／至少 150 字</p>
+<button class="primary" id="saveReflection">儲存學習心得</button>
+<p id="reflectionFeedback" class="feedback"></p>
+</section>
+
+<section id="result" class="section">
+<h2 class="page-title">⑤ 學習成果</h2>
+<div class="student-info">
+<div><b>班級：</b><span id="summaryClass">尚未填寫</span></div>
+<div><b>座號：</b><span id="summaryNo">尚未填寫</span></div>
+<div><b>姓名：</b><span id="summaryName">尚未填寫</span></div>
+</div>
+<div class="score" id="finalScore">尚未交卷</div>
+<p>線上評量成績</p>
+<h3>四大學習成果統整</h3>
+<div class="result-grid">
+<div class="card"><b>① 氣泡排序</b><p id="summaryBubble">尚未完成</p></div>
+<div class="card"><b>② 選擇排序</b><p id="summarySelection">尚未完成</p></div>
+<div class="card"><b>③ 線上評量</b><p id="summaryQuiz">尚未完成</p></div>
+<div class="card"><b>④ 學習檢查</b><p id="summaryCheck">尚未完成</p></div>
+</div>
+<div class="card" style="margin-top:14px"><b>📝 學習心得</b><p id="summaryReflection">尚未完成</p></div>
+<button class="primary" id="printPdf" type="button">🖨️ 產生 PDF 列印版</button>
+</section>
+</div>
+
+<div id="printReport"></div>
+
+<script>
+(function(){
+var started=false;
+var bubbleData={values:[8,2,6,10,4],round:1,index:0,compare:0,swap:0,totalCompare:0,totalSwap:0};
+var selectionData={values:[8,2,6,10,4],round:1,start:0,scan:1,minIndex:0,compare:0,swap:0,totalCompare:0,totalSwap:0};
+
+function showPage(id){
+  var page=document.getElementById(id);
+  if(!page)return;
+
+  document.querySelectorAll(".section").forEach(function(x){
+    x.classList.remove("show");
+  });
+  page.classList.add("show");
+
+  document.querySelectorAll(".nav button").forEach(function(b){
+    b.classList.toggle("active",b.getAttribute("data-target")===id);
+  });
+
+  if(history.replaceState){
+    history.replaceState(null,"","#"+id);
+  }
+
+  setTimeout(function(){
+    page.scrollIntoView({behavior:"smooth",block:"start"});
+  },30);
+
+  updateSummary();
+}
+
+document.querySelectorAll(".nav button").forEach(function(b){
+  b.addEventListener("click",function(){
+    showPage(b.getAttribute("data-target"));
+  });
+});
+
+function openByHash(){
+  var id=location.hash.replace("#","");
+  if(id && document.getElementById(id)){
+    showPage(id);
+  }
+}
+window.addEventListener("hashchange",openByHash);
+function renderBars(id,arr,a,b,sorted){var box=document.getElementById(id);box.innerHTML="";arr.forEach(function(v,i){var item=document.createElement("div");item.className="bar-item";if(sorted!==undefined&&i<sorted)item.classList.add("sorted");if(a===i)item.classList.add("current");if(b===i)item.classList.add("current2");var rect=document.createElement("div");rect.className="bar-rect";rect.style.height=(v*13+28)+"px";rect.textContent=v;item.appendChild(rect);var lab=document.createElement("div");lab.className="bar-label";lab.textContent=i+1;item.appendChild(lab);box.appendChild(item);});}
+function bubbleUI(){var d=bubbleData;renderBars("bubbleBars",d.values,d.index,d.index+1,d.round-1);document.getElementById("bubbleRound").textContent=d.round<=4?"第"+d.round+"輪":"完成";document.getElementById("bubbleCompareCurrent").textContent=d.totalCompare;document.getElementById("bubbleSwapCurrent").textContent=d.totalSwap;document.getElementById("bubbleCompareRound").textContent=d.compare;document.getElementById("bubbleSwapRound").textContent=d.swap;}
+function bubbleReset(){bubbleData={values:[8,2,6,10,4],round:1,index:0,compare:0,swap:0,totalCompare:0,totalSwap:0};bubbleUI();document.getElementById("bubbleAnimationText").textContent="按下「下一步」逐步觀看比較與交換。";}
+function bubbleNext(){var d=bubbleData;if(d.round>4){document.getElementById("bubbleAnimationText").textContent="動畫完成：總比較 "+d.totalCompare+" 次，總交換 "+d.totalSwap+" 次。";return;}var last=5-d.round;if(d.index<last){var i=d.index;d.compare++;d.totalCompare++;var swap=d.values[i]>d.values[i+1];if(swap){var t=d.values[i];d.values[i]=d.values[i+1];d.values[i+1]=t;d.swap++;d.totalSwap++;document.getElementById("bubbleAnimationText").textContent="第"+d.round+"輪：比較第"+(i+1)+"、第"+(i+2)+"項 → 發生交換。";}else{document.getElementById("bubbleAnimationText").textContent="第"+d.round+"輪：比較第"+(i+1)+"、第"+(i+2)+"項 → 不交換。";}d.index++;bubbleUI();}else{document.getElementById("bubbleAnimationText").textContent="第"+d.round+"輪完成：比較 "+d.compare+" 次、交換 "+d.swap+" 次。排序結果："+d.values.join("、");d.round++;d.index=0;d.compare=0;d.swap=0;bubbleUI();}}
+
+function selectionUI(){var d=selectionData;renderBars("selectionBars",d.values,d.scan,d.minIndex,d.round-1);document.getElementById("selectionRound").textContent=d.round<=4?"第"+d.round+"輪":"完成";document.getElementById("selectionCompareCurrent").textContent=d.totalCompare;document.getElementById("selectionSwapCurrent").textContent=d.totalSwap;document.getElementById("selectionCompareRound").textContent=d.compare;document.getElementById("selectionSwapRound").textContent=d.swap;}
+function selectionReset(){selectionData={values:[8,2,6,10,4],round:1,start:0,scan:1,minIndex:0,compare:0,swap:0,totalCompare:0,totalSwap:0};selectionUI();document.getElementById("selectionText").textContent="按下「下一步」逐步觀看掃描與交換。";}
+function selectionNext(){var d=selectionData;if(d.round>4){document.getElementById("selectionText").textContent="動畫完成：總比較 "+d.totalCompare+" 次，總交換 "+d.totalSwap+" 次。";return;}var end=5;if(d.scan<end){d.compare++;d.totalCompare++;if(d.values[d.scan]<d.values[d.minIndex]){d.minIndex=d.scan;document.getElementById("selectionText").textContent="第"+d.round+"輪：比較第"+(d.scan+1)+"項，新的最小值是 "+d.values[d.minIndex]+"。";}else{document.getElementById("selectionText").textContent="第"+d.round+"輪：比較第"+(d.scan+1)+"項，最小值候選不變。";}d.scan++;selectionUI();if(d.scan>=5){d.swap=0;if(d.minIndex!==d.start){var t=d.values[d.start];d.values[d.start]=d.values[d.minIndex];d.values[d.minIndex]=t;d.swap=1;d.totalSwap++;document.getElementById("selectionText").textContent="第"+d.round+"輪搜尋完成 → 將最小值交換到第"+(d.start+1)+"個位置。";}else{document.getElementById("selectionText").textContent="第"+d.round+"輪搜尋完成 → 最小值已在正確位置，不交換。";}selectionUI();d.round++;d.start++;d.scan=d.start+1;d.minIndex=d.start;d.compare=0;d.swap=0;}}}
+
+bubbleReset();selectionReset();
+document.getElementById("bubbleNext").addEventListener("click",bubbleNext);document.getElementById("bubbleReset").addEventListener("click",bubbleReset);document.getElementById("bubblePlay").addEventListener("click",function(){bubbleReset();var t=setInterval(function(){if(bubbleData.round>4){clearInterval(t);}else bubbleNext();},650);});
+document.getElementById("selectionNext").addEventListener("click",selectionNext);document.getElementById("selectionReset").addEventListener("click",selectionReset);document.getElementById("selectionPlay").addEventListener("click",function(){selectionReset();var t=setInterval(function(){if(selectionData.round>4){clearInterval(t);}else selectionNext();},700);});
+
+function norm2(v){return v.replace(/，/g," ").replace(/,/g," ").trim().split(/\s+/).filter(Boolean).join(" ");}
+function checkAnswers(prefix,answers,outId,ccPrefix,ssPrefix){var ok=true;answers.forEach(function(a,i){if(norm2(document.getElementById(prefix+(i+1)).value)!==norm2(a.result.join(" ")))ok=false;if(Number(document.getElementById(ccPrefix+(i+1)).value)!==a.comp)ok=false;if(Number(document.getElementById(ssPrefix+(i+1)).value)!==a.swap)ok=false;});document.getElementById(outId).textContent=ok?"✅ 全部正確！":"有答案需要再檢查。";}
+var bubbleAnswers1=[{result:[2,6,8,4,10],comp:4,swap:3},{result:[2,6,4,8,10],comp:3,swap:1},{result:[2,4,6,8,10],comp:2,swap:1},{result:[2,4,6,8,10],comp:1,swap:0}];
+var bubbleAnswers2=[{result:[7,5,4,3,9],comp:4,swap:3},{result:[5,4,3,7,9],comp:3,swap:3},{result:[4,3,5,7,9],comp:2,swap:2},{result:[3,4,5,7,9],comp:1,swap:1}];
+var selectionAnswers=[{result:[2,8,6,10,4],comp:4,swap:1},{result:[2,4,6,10,8],comp:3,swap:1},{result:[2,4,6,10,8],comp:2,swap:0},{result:[2,4,6,8,10],comp:1,swap:1}];
+document.getElementById("checkBubble1").addEventListener("click",function(){checkAnswers("b",bubbleAnswers1,"bubbleAns1","bc","bs");});
+document.getElementById("checkBubble2").addEventListener("click",function(){checkAnswers("c",bubbleAnswers2,"bubbleAns2","cc","cs");});
+document.getElementById("checkSelection1").addEventListener("click",function(){checkAnswers("s",selectionAnswers,"selectionAns1","sc","ss");});
+function selectOnly(id){document.querySelectorAll("#"+id+" .choice").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll("#"+id+" .choice").forEach(function(x){x.classList.remove("selected")});btn.classList.add("selected");});});}
+selectOnly("bubbleChoice1");selectOnly("selectionChoice1");selectOnly("selectionChoice2");selectOnly("methodQuestion");
+
+var questions=[
+["氣泡排序由小到大時，第一輪完成後通常會發生什麼？",["最大的數字到最右邊","最大的數字到最左邊","最小的數字到最右邊","最小的數字到最左邊"],0],
+["氣泡排序主要比較什麼？",["任意兩個數字","相鄰的兩個元素","第一個與最後一個","只有最小值"],1],
+["8、2、6、10、4 的氣泡排序第一輪結果是？",["2、6、8、4、10","8、2、6、4、10","2、8、6、10、4","4、2、6、8、10"],0],
+["7、9、5、4、3 的氣泡排序第二輪結果是？",["7、5、4、3、9","5、4、3、7、9","4、3、5、7、9","3、4、5、7、9"],1],
+["選擇排序每一輪主要做什麼？",["找未排序區的最小值","比較相鄰元素直到交換","只比較最後兩個","隨機交換"],0],
+["8、2、6、10、4 的選擇排序第一輪結果是？",["2、8、6、10、4","8、2、6、4、10","2、6、8、10、4","4、2、6、10、8"],0],
+["6、3、8、2 用選擇排序由小到大，第一輪結果是？",["2、3、8、6","3、6、8、2","6、2、8、3","8、3、6、2"],0],
+["哪一項最能描述氣泡排序的『冒泡』？",["最小值一定跑到最右邊","一輪比較後，較大的值逐步往右移","每次都找最小值","資料會自動消失"],1],
+["選擇排序完成一輪後，左側哪一部分代表？",["已排序區","亂數區","暫存區","錯誤區"],0],
+["若已經排序完成，最佳的學習檢核方式是？",["只背答案","能說明每一輪如何變化","只記住程式碼","不需要驗證"],1]
+];
+
+var quizBox=document.getElementById("quizBox");
+questions.forEach(function(q,i){
+  var div=document.createElement("div"); div.className="question";
+  var b=document.createElement("b"); b.textContent=(i+1)+". "+q[0]; div.appendChild(b);
+  q[1].forEach(function(o,j){
+    var btn=document.createElement("button"); btn.type="button"; btn.className="choice";
+    btn.textContent=String.fromCharCode(65+j)+". "+o;
+    btn.addEventListener("click",function(){
+      div.querySelectorAll(".choice").forEach(function(x){x.classList.remove("selected")});
+      btn.classList.add("selected");
+      div.dataset.answer=j;
+    });
+    div.appendChild(btn);
+  });
+  quizBox.appendChild(div);
+});
+
+document.getElementById("submitQuiz").addEventListener("click",function(){
+  var qs=quizBox.querySelectorAll(".question"),score=0,answered=0;
+  qs.forEach(function(q,i){
+    if(q.dataset.answer!==undefined){answered++;if(Number(q.dataset.answer)===questions[i][2])score+=10;}
+  });
+  if(answered<10){document.getElementById("quizFeedback").textContent="⚠️ 尚有 "+(10-answered)+" 題未作答。";return;}
+  document.getElementById("quizFeedback").textContent="🎯 成績："+score+" / 100 分";
+  document.getElementById("finalScore").textContent=score+" / 100";
+  updateSummary();
+});
+
+var checks=document.querySelectorAll("#checks input");
+document.querySelectorAll("#bubbleUnderstand1,#bubbleUnderstand2,#bubbleUnderstand3,#selectionUnderstand1,#selectionUnderstand2,#selectionUnderstand3").forEach(function(c){c.addEventListener("change",updateSummary);});
+checks.forEach(function(c){c.addEventListener("change",function(){
+  var n=0;checks.forEach(function(x){if(x.checked)n++;});
+  document.getElementById("meter").style.width=(n/6*100)+"%";
+  document.getElementById("checkText").textContent="目前完成 "+n+" / 6";
+  updateSummary();
+});});
+
+document.getElementById("reflection").addEventListener("input",function(){
+  var n=Array.from(this.value.trim()).length;
+  document.getElementById("reflectionCount").textContent="目前 "+n+" 字／至少 150 字";
+});
+document.getElementById("saveReflection").addEventListener("click",function(){
+  var n=Array.from(document.getElementById("reflection").value.trim()).length;
+  document.getElementById("reflectionFeedback").textContent=n>=150?"✅ 已儲存學習心得。":"⚠️ 請至少輸入150字。";
+  updateSummary();
+});
+
+function updateSummary(){
+  var currentClass=document.getElementById("startClass").value.trim();
+  var currentNo=document.getElementById("startNo").value.trim();
+  var currentName=document.getElementById("startName").value.trim();
+
+  document.getElementById("summaryClass").textContent=currentClass||"尚未填寫";
+  document.getElementById("summaryNo").textContent=currentNo||"尚未填寫";
+  document.getElementById("summaryName").textContent=currentName||"尚未填寫";
+
+  document.getElementById("quizClass").textContent=currentClass||"尚未填寫";
+  document.getElementById("quizNo").textContent=currentNo||"尚未填寫";
+  document.getElementById("quizName").textContent=currentName||"尚未填寫";
+
+  var bAnswers=[
+    [2,6,8,4,10],[2,6,4,8,10],[2,4,6,8,10],[2,4,6,8,10]
+  ];
+  var sAnswers=[
+    [2,8,6,10,4],[2,4,6,10,8],[2,4,6,10,8],[2,4,6,8,10]
+  ];
+  var bDone=["b1","b2","b3","b4"].every(function(id,i){return norm2(document.getElementById(id).value)===norm2(bAnswers[i].join(" "))});
+  var sDone=["s1","s2","s3","s4"].every(function(id,i){return norm2(document.getElementById(id).value)===norm2(sAnswers[i].join(" "))});
+  document.getElementById("summaryBubble").textContent=bDone?"✅ 已完成":"尚未完成";
+  document.getElementById("summarySelection").textContent=sDone?"✅ 已完成":"尚未完成";
+  document.getElementById("summaryQuiz").textContent=/^\d+\s*\/\s*100$/.test(document.getElementById("finalScore").textContent.trim())?document.getElementById("finalScore").textContent:"尚未完成";
+  var checked=0;checks.forEach(function(x){if(x.checked)checked++;});
+  document.getElementById("summaryCheck").textContent=checked===6?"✅ 已完成（6/6）":"尚未完成（"+checked+"/6）";
+  var rn=Array.from(document.getElementById("reflection").value.trim()).length;
+  document.getElementById("summaryReflection").textContent=rn>=150?"✅ 已完成（"+rn+"字）":"尚未完成";
+}
+
+document.querySelectorAll(".nav button").forEach(function(btn){
+  btn.addEventListener("click",function(){showPage(btn.getAttribute("data-target"));});
+});
+
+document.getElementById("startLearning").addEventListener("click",function(e){
+  if(e) e.preventDefault();
+
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+
+  if(!c || !n || !s){
+    document.getElementById("startError").textContent="⚠️ 請完整填寫班級、座號與姓名。";
+    return false;
+  }
+
+  document.getElementById("startError").textContent="";
+  document.getElementById("startedMessage").textContent="";
+  document.getElementById("startScreen").style.display="none";
+  document.getElementById("nav").classList.add("ready");
+  document.getElementById("nav").style.display="flex";
+
+  showPage("bubble");
+  updateSummary();
+  return false;
+});
+
+document.querySelectorAll("#startClass,#startNo,#startName").forEach(function(el){
+  el.addEventListener("input",updateSummary);
+});
+
+document.getElementById("printPdf").addEventListener("click",function(){
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+
+  if(!c||!n||!s){
+    alert("請先完成開始學習的班級、座號與姓名。");
+    return;
+  }
+
+  updateSummary();
+
+  var report=document.getElementById("printReport");
+  var b1=document.getElementById("b1").value.trim();
+  var b2=document.getElementById("b2").value.trim();
+  var b3=document.getElementById("b3").value.trim();
+  var b4=document.getElementById("b4").value.trim();
+  var bc1=document.getElementById("bc1").value,bc2=document.getElementById("bc2").value,bc3=document.getElementById("bc3").value,bc4=document.getElementById("bc4").value;
+  var bs1=document.getElementById("bs1").value,bs2=document.getElementById("bs2").value,bs3=document.getElementById("bs3").value,bs4=document.getElementById("bs4").value;
+
+  var c1=document.getElementById("c1").value.trim(),c2=document.getElementById("c2").value.trim(),c3=document.getElementById("c3").value.trim(),c4=document.getElementById("c4").value.trim();
+  var cc1=document.getElementById("cc1").value,cc2=document.getElementById("cc2").value,cc3=document.getElementById("cc3").value,cc4=document.getElementById("cc4").value;
+  var cs1=document.getElementById("cs1").value,cs2=document.getElementById("cs2").value,cs3=document.getElementById("cs3").value,cs4=document.getElementById("cs4").value;
+
+  var s1=document.getElementById("s1").value.trim(),s2=document.getElementById("s2").value.trim(),s3=document.getElementById("s3").value.trim(),s4=document.getElementById("s4").value.trim();
+  var sc1=document.getElementById("sc1").value,sc2=document.getElementById("sc2").value,sc3=document.getElementById("sc3").value,sc4=document.getElementById("sc4").value;
+  var ss1=document.getElementById("ss1").value,ss2=document.getElementById("ss2").value,ss3=document.getElementById("ss3").value,ss4=document.getElementById("ss4").value;
+
+  var quizScore=document.getElementById("finalScore").textContent.trim();
+  var reflection=document.getElementById("reflection").value.trim();
+
+  function rows(title, vals){
+    return '<h3>'+title+'</h3><table class="pdf-table"><tr>'+vals.map(function(v){return '<td>'+esc(v)+'</td>';}).join('')+'</tr></table>';
+  }
+
+  function roundTable(title, results, comps, swaps){
+    var out='<h3>'+title+'</h3><table class="pdf-table"><tr><th>輪次</th><th>排序結果</th><th>比較次數</th><th>交換次數</th></tr>';
+    for(var i=0;i<4;i++){
+      out+='<tr><td>第'+(i+1)+'輪</td><td>'+esc(results[i])+'</td><td>'+esc(comps[i])+'</td><td>'+esc(swaps[i])+'</td></tr>';
+    }
+    return out+'</table>';
+  }
+
+  var resultCards=
+    '<div class="pdf-grid">'+
+    '<div class="pdf-card"><b>① 氣泡排序</b><br>'+esc(document.getElementById("summaryBubble").textContent)+'</div>'+
+    '<div class="pdf-card"><b>② 選擇排序</b><br>'+esc(document.getElementById("summarySelection").textContent)+'</div>'+
+    '<div class="pdf-card"><b>③ 線上評量</b><br>'+esc(document.getElementById("summaryQuiz").textContent)+'</div>'+
+    '<div class="pdf-card"><b>④ 學習檢查</b><br>'+esc(document.getElementById("summaryCheck").textContent)+'</div>'+
+    '</div>';
+
+  report.innerHTML='<div class="pdf-report">'+
+    '<h1>單元二：排序法｜完整學習成果</h1>'+
+    '<div class="pdf-meta"><b>班級：</b>'+esc(c)+'　<b>座號：</b>'+esc(n)+'　<b>姓名：</b>'+esc(s)+'</div>'+
+
+    '<h2>① 氣泡排序</h2>'+
+    '<p>作法：從頭開始，逐一比較相鄰的兩個元素，若順序錯誤就交換。</p>'+
+    roundTable("任務一：8、2、6、10、4", [b1,b2,b3,b4], [bc1,bc2,bc3,bc4], [bs1,bs2,bs3,bs4])+
+    '<p><b>選擇題：</b>第一輪結果的作答已記錄於學習系統。</p>'+
+    roundTable("任務二：7、9、5、4、3", [c1,c2,c3,c4], [cc1,cc2,cc3,cc4], [cs1,cs2,cs3,cs4])+
+
+    '<h2>② 選擇排序</h2>'+
+    '<p>作法：從未排序的資料中完整掃描，找出最小值並放到已排序區間的最旁邊。</p>'+
+    roundTable("任務一：8、2、6、10、4", [s1,s2,s3,s4], [sc1,sc2,sc3,sc4], [ss1,ss2,ss3,ss4])+
+    '<p><b>分類判斷題：</b>作答結果已保留於學習系統。</p>'+
+    '<p><b>選擇排序挑戰題：</b>'+esc(document.getElementById("selectionChallenge") ? document.getElementById("selectionChallenge").value.trim() : "")+'</p>'+
+
+    '<h2>③ 線上評量</h2>'+
+    '<div class="pdf-card"><b>班級：</b>'+esc(document.getElementById("quizClass").textContent)+'　<b>座號：</b>'+esc(document.getElementById("quizNo").textContent)+'　<b>姓名：</b>'+esc(document.getElementById("quizName").textContent)+'<br><b>成績：</b>'+esc(quizScore)+'</div>'+
+    '<p>共10題，作答時不顯示即時對錯，交卷後顯示總分。</p>'+
+
+    '<h2>④ 學習檢查</h2>'+
+    '<div class="pdf-card">'+esc(document.getElementById("summaryCheck").textContent)+'</div>'+
+    '<ul>'+
+      Array.from(document.querySelectorAll("#checks .check")).map(function(x){return '<li>□ '+esc(x.textContent.trim())+'</li>';}).join('')+
+    '</ul>'+
+
+    '<h2>⑤ 學習成果</h2>'+
+    resultCards+
+    '<h3>學習心得</h3><div class="pdf-text">'+esc(reflection||"尚未完成")+'</div>'+
+    '<div class="pdf-footer">資訊科技重補修｜單元二：排序法</div>'+
+    '</div>';
+
+  var oldTitle=document.title;
+  document.title=c+n+s+"-02";
+  document.body.classList.add("printing-report");
+  function restore(){document.body.classList.remove("printing-report");document.title=oldTitle;window.removeEventListener("afterprint",restore);}
+  window.addEventListener("afterprint",restore);
+  window.print();
+});
+
+function esc(v){return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;").replace(/\n/g,"<br>");}
+})();
+</script>
+</body>
+</html>

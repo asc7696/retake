@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>資訊科技重補修｜數位生活安全與防詐識讀</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans TC",sans-serif;background:#f4f7fa;color:#172033;line-height:1.7}
+.container{max-width:1050px;margin:auto;padding:20px}
+.hero{background:linear-gradient(135deg,#1d456b,#39729d);color:white;border-radius:20px;padding:28px;margin-bottom:18px}
+.hero h1{margin:8px 0;font-size:32px}
+.tag{display:inline-block;background:white;color:#1d456b;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:bold}
+.nav{display:flex;gap:8px;overflow:auto;margin-bottom:18px}
+.nav button{border:0;padding:11px 16px;border-radius:22px;background:#e2e9ef;font-weight:bold;cursor:pointer;white-space:nowrap}
+.nav button.active{background:#1d456b;color:white}
+.section{background:white;border:1px solid #dce4eb;border-radius:17px;padding:22px;margin-bottom:16px;scroll-margin-top:20px}
+.hidden{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{border:1px solid #dce4eb;border-radius:13px;padding:15px}
+button.primary{border:0;background:#1d456b;color:white;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+button.secondary{border:0;background:#e4eaf0;color:#26384b;padding:11px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+textarea{width:100%;padding:12px;border:1px solid #cbd5df;border-radius:9px;font:inherit}
+.understand{display:block;margin-top:12px;font-weight:bold}.understand input{width:19px;height:19px;margin-right:7px}
+.news-video{background:#f7fafc;border:1px solid #dce4eb;border-radius:14px;padding:16px;margin:20px 0}.video-wrap{position:relative;width:100%;max-width:800px;margin:12px auto;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden}.video-wrap iframe{width:100%;height:100%;border:0}.video-note{font-size:14px;color:#5d6b7a}.video-link{display:inline-block;background:#c62828;color:#fff;text-decoration:none;padding:13px 20px;border-radius:10px;font-weight:bold}.video-link:hover{background:#a91f1f}.char-note{font-size:13px;color:#66758a;margin:4px 0 10px}.char-note.ok{color:#28734d;font-weight:bold}.char-note.bad{color:#b23a32;font-weight:bold}
+@media print{body{background:#fff}.nav,.hero,.video-link,button{display:none!important}.section{display:block!important;border:0;padding:0}.hidden{display:none!important}.container{max-width:none;padding:0}.print-only{display:block}}
+.student-info{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;background:#eef4f8;padding:15px;border-radius:12px;margin:12px 0 18px}.student-info label{display:block;font-weight:bold;margin-bottom:5px}.student-info input{width:100%;padding:10px;border:1px solid #cbd5df;border-radius:8px;font:inherit}.student-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:#eef4f8;border-radius:12px;padding:14px;margin-bottom:15px}.student-summary p{margin:4px 0}
+@media(max-width:600px){.student-info,.student-summary{grid-template-columns:1fr}}
+.phone{max-width:350px;margin:18px auto;background:#111827;padding:11px;border-radius:28px}
+.screen{background:#f4f6f8;border-radius:20px;padding:15px;min-height:270px}
+.msg{background:white;padding:12px;border-radius:14px;margin:10px 0;box-shadow:0 2px 8px #0001}
+.warning{border-left:5px solid #c8574c}
+.choice{display:block;width:100%;text-align:left;background:white;border:2px solid #dce4eb;border-radius:10px;padding:12px;margin:8px 0;cursor:pointer;font-size:15px}
+.choice.selected{background:#e6f1f9;border-color:#1d5f8d}
+.feedback{font-weight:bold;min-height:26px}
+.flow{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:16px 2px}
+.node{min-width:145px;text-align:center;padding:14px;border-radius:13px;background:#edf2f6;border:2px solid #d8e0e8;font-weight:bold}
+.node.bad{background:#fbeceb;border-color:#e1a19a}
+.arrow{font-size:24px}
+.check{display:block;padding:10px;border-bottom:1px solid #e5e9ed}
+.check input{width:20px;height:20px;margin-right:8px}
+.meter{height:12px;background:#e2e7ec;border-radius:10px;overflow:hidden;margin-top:15px}
+.meter div{height:100%;width:0;background:#1d456b;transition:width .3s}
+.score{font-size:42px;font-weight:bold}
+.note{background:#eef4f8;padding:13px;border-radius:10px;font-size:14px}
+.question{padding:15px 0;border-bottom:1px solid #e1e6eb}
+@media(max-width:600px){.container{padding:12px}.hero{padding:20px}.hero h1{font-size:27px}.section{padding:16px}}
+
+.start-screen{position:fixed;inset:0;background:rgba(20,48,75,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.start-card{width:min(560px,100%);background:#fff;border-radius:20px;padding:28px;box-shadow:0 18px 50px #0004}
+.start-card h1{color:#1d456b;margin:10px 0}.start-form{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px;margin:18px 0}.start-form label{font-weight:bold}.start-form input{display:block;width:100%;margin-top:5px;padding:11px;border:1px solid #cbd5df;border-radius:8px;font:inherit}
+.learning-content{display:none}.learning-content.ready{display:flex}.section.learning-content.ready{display:block}
+.interactive-flow{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:18px 2px}.flow-node{min-width:150px;text-align:center;padding:16px;border-radius:13px;background:#c94747;color:white;border:3px solid #a92e2e;font-weight:bold;transition:all .35s ease}.flow-node.current{background:#1f6fb2;border-color:#0d4f86;transform:scale(1.08);box-shadow:0 8px 18px #1f6fb255}.flow-arrow{font-size:26px;font-weight:bold;color:#66758a}
+#printReport{display:none}.learning-print-button{display:inline-block;position:relative;z-index:10;cursor:pointer}.pdf-report{font-family:Arial,"Noto Sans TC",sans-serif;color:#172033;line-height:1.75}.pdf-report h1{color:#1d456b}.pdf-report h2{color:#1d456b;border-bottom:2px solid #dbe6ef;padding-bottom:5px;margin-top:20px}.pdf-meta{background:#eef4f8;padding:12px;border-radius:8px;margin:12px 0}.pdf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pdf-card,.pdf-text{border:1px solid #ccd7e0;border-radius:9px;padding:12px;margin:8px 0;white-space:normal;word-break:break-word}.pdf-footer{margin-top:30px;font-size:12px;color:#66758a}
+@media print{
+  body.printing-report>*{display:none!important}
+  body.printing-report>#printReport{display:block!important}
+  body.printing-report{background:#fff;padding:28px}
+  .pdf-report{display:block}
+}.sync-note{font-size:13px;color:#557083;margin:0 0 12px}.print-title{display:none}.page-title{color:#1d456b;font-size:28px;margin:0 0 18px;padding-bottom:10px;border-bottom:3px solid #dbe6ef}
+@media(max-width:600px){.start-form{grid-template-columns:1fr}.flow-node{min-width:125px;font-size:14px}}
+@media print{
+ body{background:white}.start-screen,.nav,.hero,.video-link,button{display:none!important}
+ .section{display:block!important;border:0;padding:0;margin-bottom:20px}.hidden{display:block!important}
+ .print-title{display:block!important;font-size:24px;font-weight:bold;margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="startScreen" class="start-screen">
+  <div class="start-card">
+    <div class="tag">高中資訊科技｜重補修</div>
+    <h1>單元一：我的數位生活安全嗎？</h1>
+    <p>開始學習前，請先輸入你的班級、座號與姓名。</p>
+    <div class="start-form">
+      <label>班級<input type="text" id="startClass" placeholder="例如：一年一班"></label>
+      <label>座號<input type="text" id="startNo" placeholder="例如：12"></label>
+      <label>姓名<input type="text" id="startName" placeholder="請輸入姓名"></label>
+    </div>
+    <button class="primary" id="startLearning">▶ 開始學習</button>
+    <p id="startError" class="feedback"></p>
+  </div>
+</div>
+
+<header class="hero">
+<span class="tag">高中資訊科技｜重補修</span>
+<h1>單元一：我的數位生活安全嗎？</h1>
+<div>數位安全 × 防詐識讀 × 情境闖關</div>
+</header>
+
+<nav class="nav learning-content">
+<button class="active" data-target="safety">① 數位安全</button>
+<button data-target="fraud">② 防詐識讀</button>
+<button data-target="quiz">③ 線上評量</button>
+<button data-target="check">④ 安全檢查</button>
+<button data-target="result">⑤ 學習成果</button>
+</nav>
+
+<section id="safety" class="section learning-content">
+<h2 class="page-title">① 數位安全</h2>
+<h2>📱 動畫情境：手機突然不見了！</h2>
+<p>想像一下：放學後，你發現自己的手機突然不見了。手機裡可能有照片、LINE、Gmail、社群帳號和學校資料。</p>
+<div class="phone">
+<div class="screen">
+<div>10:25　　Wi-Fi　🔋</div>
+<div class="msg warning"><b>⚠️ 手機遺失</b><br>現在手機不在你手上。</div>
+<div class="msg" id="risk">按下「播放風險動畫」。</div>
+</div>
+</div>
+<button class="primary" id="phoneAnim">▶ 播放風險動畫</button>
+<p class="feedback" id="phoneFeedback"></p>
+
+<h3>✍️ 想一想</h3>
+<label><b>若手機遺失，你／妳最擔心什麼？為什麼？</b></label>
+<textarea id="lost" rows="5" minlength="100" placeholder="請至少輸入100字，說明你最擔心什麼，以及為什麼……"></textarea><p class="char-note" id="lostCount">目前 0 字／至少 100 字</p>
+<button class="primary" id="saveLost">儲存回答</button>
+<p class="feedback" id="lostFeedback"></p>
+
+<hr>
+<h2>🔐 密碼與雙因素驗證</h2>
+<div class="grid">
+<div class="card"><h3>安全密碼</h3><p>避免生日、電話、姓名等容易猜測的資訊，也不要所有網站使用完全相同的密碼。</p>
+<label class="understand"><input type="checkbox" id="understandPassword"> 我理解了</label></div>
+<div class="card"><h3>雙因素驗證（2FA）</h3><p>除了密碼之外，再增加另一層驗證，例如驗證器 App、一次性驗證碼等。</p>
+<label class="understand"><input type="checkbox" id="understand2FA"> 我理解了</label></div>
+</div>
+</section>
+
+<section id="fraud" class="section hidden learning-content">
+<h2 class="page-title">② 防詐識讀</h2>
+<h2>🛡️ 防詐識讀</h2>
+<div class="grid">
+<div class="card"><h3>☎️ 165</h3><p><b>165 反詐騙諮詢專線</b>可用於疑似詐騙的諮詢與查證。</p></div>
+<div class="card"><h3>🌐 165 全民防騙網</h3><p>可查詢防詐資訊與部分可疑電話、網站等資料。</p></div>
+<div class="card"><h3>🔎 網站識讀</h3><p>不要只看網址中有沒有 gov、bank 等字樣，要確認真正的網域名稱。</p></div>
+</div>
+<div class="note">防詐口訣：<b>停一下 → 查證 → 再行動</b>。遇到「限時、帳戶異常、立即處理」等催促語句，要提高警覺。
+<br><label class="understand"><input type="checkbox" id="understandFraud"> 我理解了</label></div>
+
+
+<div class="news-video">
+<h3>📰 網路新聞影音：先看真實案例</h3>
+<p>請先觀看新聞影音，再進入下面的兩個詐騙流程動畫。</p>
+<a class="video-link" href="https://www.youtube.com/watch?v=h04sOwl5L4o&t=2s"
+target="_blank" rel="noopener noreferrer">▶ 開啟新聞影音（新分頁）</a>
+<p class="video-note">如果影音無法直接播放，請點上方連結，系統會在新分頁開啟影片。</p>
+<h3>✍️ 網路新聞影音觀後感</h3>
+<p><b>請至少 200 字，並特別指出你在影片中看到的詐騙陷阱、詐騙者如何誘導受害者，以及你認為可以如何避免。</b></p>
+<textarea id="newsReflection" rows="8" minlength="200" placeholder="請至少輸入200字，並特別指出詐騙陷阱……"></textarea>
+<p class="char-note bad" id="newsReflectionCount">目前 0 字／至少 200 字</p>
+<button class="primary" id="saveNewsReflection">儲存觀後感</button>
+<p class="feedback" id="newsReflectionFeedback"></p>
+</div>
+<h2>🎬 動畫一：假賣家變買家</h2>
+<div class="flow interactive-flow" id="flowDiagram1"><div class="flow-node" data-flow="flowDiagram1" data-step="1">👤 你<br>想買商品</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram1" data-step="2">🕵️ 假賣家<br>建立交易</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram1" data-step="3">💬 假客服<br>訂單異常</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram1" data-step="4">🔗 陌生連結<br>要求操作</div></div><button class="primary" id="flow1">▶ 播放流程</button>▶ 播放流程</button>
+<p class="feedback" id="flow1Text"></p>
+
+<h2>🎬 動畫二：假買家變賣家</h2>
+<div class="flow interactive-flow" id="flowDiagram2"><div class="flow-node" data-flow="flowDiagram2" data-step="1">👤 你<br>刊登商品</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram2" data-step="2">🕵️ 假買家<br>我要購買</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram2" data-step="3">🔗 假網站<br>完成認證</div><div class="flow-arrow">→</div><div class="flow-node" data-flow="flowDiagram2" data-step="4">🔐 要求資料<br>或付款</div></div><button class="primary" id="flow2">▶ 播放流程</button>▶ 播放流程</button>
+<p class="feedback" id="flow2Text"></p>
+
+<h2>🕵️ 防詐情境測驗</h2>
+<p><b>情境：</b>你在二手平台賣耳機。一位買家說：「我已付款，但平台顯示失敗」，並傳給你一個連結，要求你重新驗證身分。</p>
+<div id="fraudQ">
+<button class="choice" data-ok="0">A. 直接點連結完成驗證</button>
+<button class="choice" data-ok="0">B. 把簡訊驗證碼告訴對方</button>
+<button class="choice" data-ok="1">C. 回到原平台或官方管道查證</button>
+<button class="choice" data-ok="0">D. 依照對方指示操作 ATM</button>
+</div>
+<button class="primary" id="submitFraud" type="button">提交答案</button>
+<p id="fraudFeedback" class="feedback"></p>
+<div class="card" id="fraudResult" style="display:none;margin-top:12px">
+  <b>防詐情境測驗成績</b>
+  <div class="score" id="fraudScore">0 / 10</div>
+  <p id="fraudScoreText"></p>
+</div>
+
+<h2>🔍 網站識讀小測驗</h2>
+<p>哪一個網址最需要提高警覺？</p>
+<div id="urlQ">
+<button class="choice" data-ok="0">A. https://www.npa.gov.tw/</button>
+<button class="choice" data-ok="1">B. https://npa-security.example.com/</button>
+<button class="choice" data-ok="0">C. https://www.gov.tw/</button>
+</div>
+<p id="urlFeedback" class="feedback"></p>
+<p class="note">判斷網址時要看真正的網域。例如 npa-security.example.com 的真正網域是 example.com，不是 npa.gov.tw。</p>
+
+<h3>🏛️ 網址上的「gov」代表什麼？</h3>
+<p>在臺灣政府網站的網域命名中，「gov」主要用來表示：</p>
+<div id="govQ">
+<button class="choice" data-ok="1">1. 政府單位</button>
+<button class="choice" data-ok="0">2. 學術單位</button>
+<button class="choice" data-ok="0">3. 商業機構</button>
+</div>
+<p id="govFeedback" class="feedback"></p>
+<p class="note">補充：臺灣政府機關官方網站常見「.gov.tw」網域。辨識網站時仍要確認真正的網域名稱，不能只看網址中是否出現 gov。</p>
+
+</section>
+
+<section id="quiz" class="section hidden learning-content">
+<h2 class="page-title">③ 線上評量</h2>
+<h2>📝 線上評量｜100 分</h2>
+<div class="student-info"><div><b>班級：</b><span id="quizClass">尚未填寫</span></div><div><b>座號：</b><span id="quizNo">尚未填寫</span></div><div><b>姓名：</b><span id="quizName">尚未填寫</span></div></div><p>共 10 題，每題 10 分。請全部作答後交卷。</p>
+<div id="quizBox"></div>
+<button class="primary" id="submitQuiz">交卷並計算成績</button>
+<p id="quizFeedback" class="feedback"></p>
+</section>
+
+<section id="check" class="section hidden learning-content">
+<h2 class="page-title">④ 安全檢查</h2>
+<h2>🔐 我的數位安全檢查</h2>
+<label class="check"><input type="checkbox">我不使用生日或電話當作密碼</label>
+<label class="check"><input type="checkbox">不同重要帳號不使用完全相同的密碼</label>
+<label class="check"><input type="checkbox">我知道什麼是雙因素驗證（2FA）</label>
+<label class="check"><input type="checkbox">我的重要帳號已開啟雙因素驗證</label>
+<label class="check"><input type="checkbox">收到陌生連結時，我會先查證</label>
+<label class="check"><input type="checkbox">我不隨意公開住址、電話、身分證等資料</label>
+<label class="check"><input type="checkbox">我知道網路內容可能留下數位足跡</label>
+<button class="primary" id="submitCheck" type="button">提交安全檢查</button>
+<p id="checkSubmitFeedback" class="feedback"></p>
+<div class="meter"><div id="meter"></div></div>
+<p id="checkText">目前完成 0 / 7</p>
+
+<h3>✍️ 我的數位安全處方箋</h3>
+<textarea id="promise" rows="5" minlength="100" placeholder="請至少輸入100字，說明你未來會如何改善自己的數位安全習慣……"></textarea><p class="char-note" id="promiseCount">目前 0 字／至少 100 字</p>
+<button class="primary" id="savePromise">儲存我的承諾</button>
+<p id="promiseFeedback" class="feedback"></p>
+</section>
+
+<section id="result" class="section hidden learning-content">
+<h2 class="page-title">⑤ 學習成果</h2>
+<div class="print-title" id="printTitle">單元一：我的數位生活安全嗎？</div><h2>🏆 我的學習成果</h2>
+<div class="student-summary">
+<p><b>班級：</b><span id="summaryClass">尚未填寫</span></p>
+<p><b>座號：</b><span id="summaryNo">尚未填寫</span></p>
+<p><b>姓名：</b><span id="summaryName">尚未填寫</span></p>
+</div>
+<div class="score" id="finalScore">尚未交卷</div>
+<p>線上評量成績</p>
+<h3>四大學習成果統整</h3>
+<div class="grid">
+<div class="card"><b>① 數位安全</b><p id="summarySafety">尚未完成</p></div>
+<div class="card"><b>② 防詐識讀</b><p id="summaryFraud">尚未完成</p></div>
+<div class="card"><b>③ 線上評量</b><p id="summaryQuiz">尚未完成</p></div>
+<div class="card"><b>④ 安全檢查</b><p id="summaryCheck">尚未完成</p></div>
+</div>
+<p class="sync-note" id="syncNote">成果會在切換到本頁時自動更新。</p>
+<div class="card" style="margin-top:14px"><b>📰 網路新聞影音觀後感</b><p id="summaryNews">尚未完成</p></div>
+<div class="card" style="margin-top:14px">
+<b>📝 我的學習心得</b>
+<p>請寫下本單元的學習心得，至少 200 字。可以包含：你學到哪些數位安全觀念？哪一個防詐案例讓你印象最深？你未來會改變哪些做法？</p>
+<textarea id="reflection" rows="8" minlength="200" placeholder="請至少輸入200字……"></textarea>
+<p class="char-note" id="reflectionCount">目前 0 字／至少 200 字</p>
+<button class="primary" id="saveReflection">儲存學習心得</button>
+<p id="reflectionFeedback" class="feedback"></p>
+</div>
+<h3>今日帶走一句話</h3>
+<p><b>停一下、查證、再行動；不明連結不點，不明要求不照做。</b></p>
+<button class="primary" type="button" id="printPdf" class="primary learning-print-button" onclick="printLearningResult()">🖨️ 產生 PDF 列印版</button>
+</section>
+</div>
+
+<script>
+(function(){
+
+function setIdentity(){
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+  document.getElementById("summaryClass").textContent=c;
+  document.getElementById("summaryNo").textContent=n;
+  document.getElementById("summaryName").textContent=s;
+  document.getElementById("quizClass").textContent=c;
+  document.getElementById("quizNo").textContent=n;
+  document.getElementById("quizName").textContent=s;
+  document.getElementById("printTitle").textContent="單元一：我的數位生活安全嗎？｜"+c+" "+n+" "+s;
+}
+document.getElementById("startLearning").addEventListener("click",function(){
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+  if(!c||!n||!s){
+    document.getElementById("startError").textContent="⚠️ 請完整填寫班級、座號與姓名。";
+    return;
+  }
+  setIdentity();
+  document.getElementById("startScreen").style.display="none";
+  document.querySelectorAll(".learning-content").forEach(function(el){
+    el.classList.add("ready");
+  });
+  document.querySelector(".nav").style.display="flex";
+  showPage("safety");
+  updateSummary();
+});
+
+var fraudScenarioPassed=false;
+var fraudRulePassed=false;
+var newsReflectionPassed=false;
+var buttons=document.querySelectorAll(".nav button");
+var sections=document.querySelectorAll(".section");
+
+function showPage(id){
+  var page=document.getElementById(id);
+  if(!page)return;
+  sections.forEach(function(s){s.classList.add("hidden");});
+  page.classList.remove("hidden");
+  buttons.forEach(function(b){b.classList.toggle("active",b.getAttribute("data-target")===id);});
+  if(history.replaceState){history.replaceState(null,"","#"+id);}
+  setTimeout(function(){page.scrollIntoView({behavior:"smooth",block:"start"});},30);
+  updateSummary();
+}
+buttons.forEach(function(btn){
+  btn.addEventListener("click",function(){
+    showPage(btn.getAttribute("data-target"));
+  });
+});
+function openByHash(){
+  var id=location.hash.replace("#","");
+  if(id && document.getElementById(id))showPage(id);
+}
+window.addEventListener("hashchange",openByHash);
+
+document.getElementById("phoneAnim").addEventListener("click",function(){
+  var steps=[
+    "📷 相簿：私人照片可能被看到",
+    "💬 LINE：聊天內容可能被看到",
+    "📧 Gmail：信箱可能被開啟",
+    "🔑 帳號：可能產生進一步風險"
+  ];
+  var i=0, box=document.getElementById("risk"), fb=document.getElementById("phoneFeedback");
+  box.textContent=steps[0]; fb.textContent="風險分析 1 / 4";
+  var timer=setInterval(function(){
+    i++;
+    if(i>=steps.length){clearInterval(timer);fb.textContent="分析完成：手機就是一個個人資料中心。";return;}
+    box.textContent=steps[i];fb.textContent="風險分析 "+(i+1)+" / 4";
+  },700);
+});
+
+function countChars(value){return Array.from(value.trim()).length;}
+function updateCount(textId,countId,min){
+  var n=countChars(document.getElementById(textId).value);
+  var el=document.getElementById(countId);
+  el.textContent="目前 "+n+" 字／至少 "+min+" 字";
+  el.className="char-note "+(n>=min?"ok":"bad");
+}
+document.getElementById("lost").addEventListener("input",function(){updateCount("lost","lostCount",100);});
+document.getElementById("saveLost").addEventListener("click",function(){
+  var v=document.getElementById("lost").value.trim(), n=countChars(v);
+  document.getElementById("lostFeedback").textContent=n>=100?"✅ 已完成手機遺失反思。":"⚠️ 請至少輸入100字，目前只有 "+n+" 字。";
+  document.getElementById("resultLost").textContent=n>=100?"已完成（"+n+"字）":"尚未完成";
+  updateSummary();
+});
+
+
+function playInteractiveFlow(buttonId, diagramId, textId, steps){
+  document.getElementById(buttonId).addEventListener("click",function(){
+    var nodes=document.querySelectorAll("#"+diagramId+" .flow-node");
+    var out=document.getElementById(textId);
+    var i=0;
+    nodes.forEach(function(n){n.classList.remove("current");});
+    nodes[0].classList.add("current");
+    out.textContent=steps[0];
+    var timer=setInterval(function(){
+      i++;
+      if(i>=nodes.length){
+        clearInterval(timer);
+        nodes.forEach(function(n){n.classList.remove("current");});
+        nodes[nodes.length-1].classList.add("current");
+        out.textContent="❗看到陌生連結、要求驗證或付款時，先停止操作並查證。";
+        return;
+      }
+      nodes.forEach(function(n){n.classList.remove("current");});
+      nodes[i].classList.add("current");
+      out.textContent=steps[i];
+    },900);
+  });
+}
+playInteractiveFlow("flow1","flowDiagram1","flow1Text",["① 你想購買商品","② 假賣家出現並建立交易","③ 假客服出現：「訂單異常」","④ 要求點擊陌生連結"]);
+playInteractiveFlow("flow2","flowDiagram2","flow2Text",["① 你刊登商品","② 假買家表示要購買","③ 傳送假認證連結","④ 誘導輸入資料或付款"]);
+
+
+function bindChoiceGroup(groupId,feedbackId,resultId){
+  document.querySelectorAll("#"+groupId+" .choice").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      document.querySelectorAll("#"+groupId+" .choice").forEach(function(x){x.classList.remove("selected")});
+      btn.classList.add("selected");
+      if(groupId==="fraudQ"){
+        fraudScenarioPassed=btn.getAttribute("data-ok")==="1";
+        document.getElementById("resultFraud").textContent="已作答";
+      }
+      updateSummary();
+    });
+  });
+}
+bindChoiceGroup("fraudQ","fraudFeedback","resultFraud");
+
+document.getElementById("submitFraud").addEventListener("click",function(){
+  var selected=document.querySelector("#fraudQ .choice.selected");
+  var result=document.getElementById("fraudResult");
+  var score=document.getElementById("fraudScore");
+  var text=document.getElementById("fraudScoreText");
+  if(!selected){
+    result.style.display="block";
+    score.textContent="尚未作答";
+    text.textContent="請先選擇一個答案。";
+    return;
+  }
+  var ok=selected.getAttribute("data-ok")==="1";
+  result.style.display="block";
+  score.textContent=ok?"10 / 10":"0 / 10";
+  text.textContent="本題已提交。";
+  fraudScenarioPassed=ok;
+  document.getElementById("resultFraud").textContent="已提交（"+(ok?"10":"0")+" / 10）";
+  updateSummary();
+});
+bindChoiceGroup("urlQ","urlFeedback",null);
+
+var questions=[
+["哪一項最需要保密？",["喜歡的歌手","身分證字號","喜歡的顏色","常看的影片"],1],
+["收到包裹地址錯誤簡訊，最好的做法？",["立即點擊","轉傳朋友","透過官方管道查證","輸入信用卡資料"],2],
+["哪個密碼習慣較安全？",["所有網站用生日","所有網站用同一密碼","強密碼加雙因素驗證","公開密碼"],2],
+["什麼是數位足跡？",["鞋印","網路活動留下的紀錄","手機品牌","Wi-Fi名稱"],1],
+["看到驚人新聞應該？",["立即轉傳","只看標題","查可靠來源","相信朋友"],2],
+["雙因素驗證的作用？",["讓網路變快","增加一層驗證","讓密碼變短","取消密碼"],1],
+["遇到疑似詐騙可以撥哪個專線？",["110","119","165","1999"],2],
+["二手平台買家傳陌生連結要求認證，應該？",["點擊","給驗證碼","回原平台查證","操作ATM"],2],
+["辨識官方網站時應注意？",["有gov就一定是真的","確認真正網域與官方來源","有鎖頭就一定安全","朋友傳就可信"],1],
+["公共Wi-Fi最應謹慎進行？",["看新聞","查天氣","重要金融交易","看影片"],2]
+];
+
+var quizBox=document.getElementById("quizBox");
+questions.forEach(function(q,i){
+  var div=document.createElement("div");
+  div.className="question";
+  var title=document.createElement("b");
+  title.textContent=(i+1)+". "+q[0];
+  div.appendChild(title);
+  q[1].forEach(function(option,j){
+    var b=document.createElement("button");
+    b.type="button"; b.className="choice";
+    b.textContent=String.fromCharCode(65+j)+". "+option;
+    b.addEventListener("click",function(){
+      div.querySelectorAll(".choice").forEach(function(x){x.classList.remove("selected")});
+      b.classList.add("selected");
+      div.dataset.answer=j;
+    });
+    div.appendChild(b);
+  });
+  quizBox.appendChild(div);
+});
+
+document.getElementById("submitQuiz").addEventListener("click",function(){
+  var qs=quizBox.querySelectorAll(".question"),score=0,answered=0;
+  qs.forEach(function(q,i){
+    if(q.dataset.answer!==undefined){
+      answered++;
+      if(Number(q.dataset.answer)===questions[i][2])score+=10;
+    }
+  });
+  if(answered<10){
+    document.getElementById("quizFeedback").textContent="⚠️ 還有 "+(10-answered)+" 題未作答，請完成全部10題。";
+    return;
+  }
+  document.getElementById("quizFeedback").textContent="🎯 成績："+score+" / 100 分";
+  document.getElementById("finalScore").textContent=score+" / 100";
+  updateSummary();
+});
+
+var checks=document.querySelectorAll("#check input");
+checks.forEach(function(c){
+  c.addEventListener("change",function(){
+    var n=0; checks.forEach(function(x){if(x.checked)n++;});
+    document.getElementById("meter").style.width=(n/7*100)+"%";
+    document.getElementById("checkText").textContent="目前完成 "+n+" / 7";
+    document.getElementById("resultCheck").textContent=n+"/7 項";
+    updateSummary();
+  });
+});
+
+document.getElementById("promise").addEventListener("input",function(){updateCount("promise","promiseCount",100);});
+document.getElementById("savePromise").addEventListener("click",function(){
+  var v=document.getElementById("promise").value.trim(), n=countChars(v);
+  document.getElementById("promiseFeedback").textContent=n>=100?"✅ 已儲存你的學習承諾。":"⚠️ 請至少輸入100字，目前只有 "+n+" 字。";
+  updateSummary();
+});
+
+document.querySelectorAll("#govQ .choice").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    document.querySelectorAll("#govQ .choice").forEach(function(x){x.classList.remove("selected")});
+    btn.classList.add("selected");
+  });
+});
+
+function updateSummary(){
+  fraudRulePassed=document.getElementById("understandFraud").checked;
+  newsReflectionPassed=Array.from(document.getElementById("newsReflection").value.trim()).length>=200;
+  if(document.getElementById("fraudQ .choice.correct")){
+    fraudScenarioPassed=true;
+  }
+  var c=document.getElementById("startClass").value.trim();
+  var n=document.getElementById("startNo").value.trim();
+  var s=document.getElementById("startName").value.trim();
+
+  document.getElementById("summaryClass").textContent=c||"尚未填寫";
+  document.getElementById("summaryNo").textContent=n||"尚未填寫";
+  document.getElementById("summaryName").textContent=s||"尚未填寫";
+  document.getElementById("syncNote").textContent="✅ 學習成果已更新："+new Date().toLocaleTimeString("zh-TW");
+
+  var lostOK=Array.from(document.getElementById("lost").value.trim()).length>=100;
+  var passwordOK=document.getElementById("understandPassword").checked;
+  var twoFAOK=document.getElementById("understand2FA").checked;
+  var safetyOK=lostOK && passwordOK && twoFAOK;
+
+  var fraudScenarioOK=fraudScenarioPassed;
+  var fraudRuleOK=document.getElementById("understandFraud").checked;
+  var newsOK=newsReflectionPassed || Array.from(document.getElementById("newsReflection").value.trim()).length>=200;
+  var fraudOK=fraudScenarioOK && fraudRuleOK && newsOK;
+
+  var quizText=document.getElementById("finalScore").textContent.trim();
+  var quizOK=/^\d+\s*\/\s*100$/.test(quizText);
+
+  var checkboxes=document.querySelectorAll("#checks input");
+  var checked=0;
+  checkboxes.forEach(function(x){ if(x.checked) checked++; });
+  var checkOK=checked===checkboxes.length;
+
+  var reflectionOK=Array.from(document.getElementById("reflection").value.trim()).length>=200;
+
+  document.getElementById("summarySafety").textContent=safetyOK
+    ?"✅ 已完成":"尚未完成";
+  document.getElementById("summaryFraud").textContent=fraudOK
+    ?"✅ 已完成":"尚未完成";
+  document.getElementById("summaryQuiz").textContent=quizOK
+    ?quizText:"尚未完成";
+  document.getElementById("summaryCheck").textContent=checkOK
+    ?"✅ 已完成（7/7）":"尚未完成（"+checked+"/7）";
+
+  document.getElementById("summaryNews").textContent=newsOK
+    ?"✅ 已完成（"+Array.from(document.getElementById("newsReflection").value.trim()).length+"字）":"尚未完成";
+
+  if(document.getElementById("quizClass")){
+    document.getElementById("quizClass").textContent=c||"尚未填寫";
+    document.getElementById("quizNo").textContent=n||"尚未填寫";
+    document.getElementById("quizName").textContent=s||"尚未填寫";
+  }
+
+  return {
+    c:c,n:n,s:s,safetyOK:safetyOK,fraudOK:fraudOK,
+    quizOK:quizOK,checkOK:checkOK,newsOK:newsOK,reflectionOK:reflectionOK
+  };
+}
+
+
+document.querySelectorAll("#understandPassword,#understand2FA,#understandFraud").forEach(function(cb){
+  cb.addEventListener("change",function(){
+    if(cb.id==="understandFraud") fraudRulePassed=cb.checked;
+    updateSummary();
+  });
+});
+
+var oldSubmit=document.getElementById("submitQuiz");
+oldSubmit.addEventListener("click",function(){
+  updateSummary();
+});
+
+var oldSaveLost=document.getElementById("saveLost");
+oldSaveLost.addEventListener("click",function(){
+  updateSummary();
+});
+
+checks.forEach(function(c){
+  c.addEventListener("change",function(){
+    updateSummary();
+  });
+});
+
+
+document.getElementById("submitCheck").addEventListener("click",function(){
+  var checked=0;
+  checks.forEach(function(x){if(x.checked)checked++;});
+  checkSubmitted=true;
+  var msg=document.getElementById("checkSubmitFeedback");
+  msg.textContent=checked===7?"✅ 安全檢查已提交（7 / 7）。":"已提交安全檢查，目前完成 "+checked+" / 7。";
+  updateSummary();
+});
+
+document.getElementById("reflection").addEventListener("input",function(){updateCount("reflection","reflectionCount",200);});
+document.getElementById("saveReflection").addEventListener("click",function(){
+  var v=document.getElementById("reflection").value.trim(), n=countChars(v);
+  document.getElementById("reflectionFeedback").textContent=n>=200?"✅ 已儲存學習心得。":"⚠️ 請至少輸入200字，目前只有 "+n+" 字。";
+  updateSummary();
+});
+
+
+function updateCharCount(textId,countId,min){
+  var v=document.getElementById(textId).value.trim();
+  var n=Array.from(v).length;
+  var el=document.getElementById(countId);
+  el.textContent="目前 "+n+" 字／至少 "+min+" 字";
+  el.className="char-note "+(n>=min?"ok":"bad");
+  return n;
+}
+document.getElementById("newsReflection").addEventListener("input",function(){
+  updateCharCount("newsReflection","newsReflectionCount",200);
+});
+document.getElementById("saveNewsReflection").addEventListener("click",function(){
+  var n=updateCharCount("newsReflection","newsReflectionCount",200);
+  var msg=document.getElementById("newsReflectionFeedback");
+  newsReflectionPassed=n>=200;
+  if(newsReflectionPassed){
+    msg.textContent="✅ 已完成新聞影音觀後感。";
+    document.getElementById("summaryNews").textContent="已完成（"+n+"字）";
+  }else{
+    msg.textContent="⚠️ 請至少輸入200字，目前只有 "+n+" 字。";
+    document.getElementById("summaryNews").textContent="尚未完成";
+  }
+  updateSummary();
+});
+updateCharCount("newsReflection","newsReflectionCount",200);
+
+
+
+updateCount("lost","lostCount",100);
+updateCount("promise","promiseCount",100);
+updateCount("reflection","reflectionCount",200);
+
+
+function openByHash(){
+  var id=location.hash.replace("#","");
+  if(!id)return;
+  var page=document.getElementById(id);
+  if(!page)return;
+  sections.forEach(function(s){s.classList.add("hidden");});
+  page.classList.remove("hidden");
+  buttons.forEach(function(b){b.classList.toggle("active",b.getAttribute("data-target")===id);});
+  setTimeout(function(){page.scrollIntoView({behavior:"smooth",block:"start"});},50);
+}
+window.addEventListener("hashchange",openByHash);
+})();
+</script>
+
+<script>
+function printLearningResult(){
+  function val(id){var el=document.getElementById(id);return el?el.value.trim():"";}
+  function text(id){var el=document.getElementById(id);return el?el.textContent.trim():"";}
+  function esc(v){
+    return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")
+      .replace(/\n/g,"<br>");
+  }
+  var c=val("startClass"),n=val("startNo"),s=val("startName");
+  if(!c||!n||!s){alert("請先完成「開始學習」的班級、座號與姓名。");return;}
+  if(typeof updateSummary==="function")updateSummary();
+
+  var report=document.getElementById("printReport");
+  if(!report){report=document.createElement("div");report.id="printReport";document.body.appendChild(report);}
+
+  var quizAnswers=Array.from(document.querySelectorAll("#quizBox .question")).map(function(q,i){
+    var sel=q.querySelector(".choice.selected");
+    return "第"+(i+1)+"題："+(sel?sel.textContent:"尚未作答");
+  }).join("<br>");
+
+  var securityChecks=Array.from(document.querySelectorAll("#checks .check")).map(function(x){
+    var cb=x.querySelector("input");
+    return (cb&&cb.checked?"☑ ":"☐ ")+x.textContent.trim();
+  }).join("<br>");
+
+  report.innerHTML=
+  '<div class="pdf-report">'+
+    '<h1>單元一：我的數位生活安全嗎？｜完整學習成果</h1>'+
+    '<div class="pdf-meta"><b>班級：</b>'+esc(c)+'　<b>座號：</b>'+esc(n)+'　<b>姓名：</b>'+esc(s)+'</div>'+
+
+    '<h2>① 數位安全</h2>'+
+    '<h3>手機遺失反思</h3><div class="pdf-text">'+esc(val("lost")||"尚未完成")+'</div>'+
+    '<h3>安全密碼</h3><div class="pdf-text">我理解了：'+(document.getElementById("understandPassword").checked?"☑":"☐")+'</div>'+
+    '<h3>雙因素驗證（2FA）</h3><div class="pdf-text">我理解了：'+(document.getElementById("understand2FA").checked?"☑":"☐")+'</div>'+
+
+    '<h2>② 防詐識讀</h2>'+
+    '<h3>網路新聞影音觀後感</h3><div class="pdf-text">'+esc(val("newsReflection")||"尚未完成")+'</div>'+
+    '<h3>防詐口訣</h3><div class="pdf-text">停一下 → 查證 → 再行動<br>我理解了：'+(document.getElementById("understandFraud").checked?"☑":"☐")+'</div>'+
+    '<h3>防詐情境測驗</h3><div class="pdf-text"><b>成績：</b>'+esc(text("fraudScore")||"尚未提交")+'<br>'+esc(text("fraudScoreText")||"尚未提交")+'</div>'+
+    '<h3>網站識讀</h3><div class="pdf-text">網址辨識與 gov 網域題已列入本單元學習活動。</div>'+
+
+    '<h2>③ 線上評量</h2>'+
+    '<div class="pdf-card"><b>班級：</b>'+esc(text("quizClass"))+'　<b>座號：</b>'+esc(text("quizNo"))+'　<b>姓名：</b>'+esc(text("quizName"))+
+    '<br><b>成績：</b>'+esc(text("finalScore")||"尚未交卷")+'</div>'+
+    '<div class="pdf-text">'+quizAnswers+'</div>'+
+
+    '<h2>④ 安全檢查</h2>'+
+    '<div class="pdf-text">'+securityChecks+'<br><br>'+esc(text("checkSubmitFeedback")||"尚未提交")+'</div>'+
+    '<h3>我的數位安全處方箋</h3><div class="pdf-text">'+esc(val("promise")||"尚未完成")+'</div>'+
+
+    '<h2>⑤ 學習成果</h2>'+
+    '<div class="pdf-grid">'+
+      '<div class="pdf-card"><b>① 數位安全</b><br>'+esc(text("summarySafety"))+'</div>'+
+      '<div class="pdf-card"><b>② 防詐識讀</b><br>'+esc(text("summaryFraud"))+'</div>'+
+      '<div class="pdf-card"><b>③ 線上評量</b><br>'+esc(text("summaryQuiz"))+'</div>'+
+      '<div class="pdf-card"><b>④ 安全檢查</b><br>'+esc(text("summaryCheck"))+'</div>'+
+    '</div>'+
+    '<h3>我的學習心得</h3><div class="pdf-text">'+esc(val("reflection")||"尚未完成")+'</div>'+
+    '<div class="pdf-footer">資訊科技重補修｜單元一</div>'+
+  '</div>';
+
+  var oldTitle=document.title;
+  document.title=c+n+s+"-01";
+  document.body.classList.add("printing-report");
+
+  function restore(){
+    document.body.classList.remove("printing-report");
+    document.title=oldTitle;
+    window.removeEventListener("afterprint",restore);
+  }
+  window.addEventListener("afterprint",restore);
+  window.print();
+}
+</script>
+
+</body>
+</html>
